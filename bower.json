@@ -1,0 +1,28 @@
+{
+  "name": "d2l-organizations",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "d2l-organizations.html",
+  "homepage":
+    "https://github.com/BrightspaceHypermediaComponents/organizations",
+  "ignore": [
+    "test",
+    ".editorconfig",
+    ".eslintrc.json",
+    ".gitignore",
+    ".travis.yml",
+    "CODEOWNERS",
+    "package.json",
+    "wct.conf.json"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.6.0",
+    "polymer-siren-mixins": "Brightspace/polymer-siren-mixins"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^3.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  }
+}

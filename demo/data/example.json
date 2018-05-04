@@ -1,0 +1,10 @@
+{
+	"class": ["example"],
+	"properties": { "title": "Amazing Example" },
+	"links": [
+		{
+			"rel": ["self"],
+			"href": "data/example.json"
+		}
+	]
+}
