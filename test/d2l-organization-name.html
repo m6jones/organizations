@@ -6,22 +6,21 @@
 		<title>d2l-organizations test</title>
 		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 		<script src="../../web-component-tester/browser.js"></script>
-		<link rel="import" href="../components/d2l-organizations.html">
+		<link rel="import" href="../components/d2l-organization-name.html">
 	</head>
 	<body>
 		<test-fixture id="basic">
 			<template>
-				<d2l-organizations></d2l-organizations>
+				<d2l-organization-name></d2l-organization-name>
 			</template>
 		</test-fixture>
 
 		<script>
-			describe('d2l-organizations', function() {
-				var elem;
+			describe('d2l-organization-name', function() {
 				describe('basic', function() {
 					it('should instantiate the element', function() {
-						elem = fixture('basic');
-						expect(elem.is).to.equal('d2l-organizations');
+						const elem = fixture('basic');
+						expect(elem.tagName).to.equal('D2L-ORGANIZATION-NAME');
 					});
 				});
 			});
