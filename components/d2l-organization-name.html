@@ -1,10 +1,11 @@
 <link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../polymer-siren-mixins/siren-entity-mixin.html">
+
 <dom-module id="d2l-organization-name">
 	<template>
 		<style>
 			:host {
-				display: inline-block;
+				display: inline;
 			}
 		</style>
 		[[name]]
@@ -14,7 +15,7 @@
 		/*
 			@mixes SirenEntityMixin
 			@demo demos/index.html
-	 	*/
+		*/
 		class D2LOrganizationName extends D2L.Polymer.Mixins.SirenEntityMixin(Polymer.Element) {
 			static get is() {
 				return 'd2l-organization-name';
@@ -27,9 +28,10 @@
 					}
 				};
 			}
-				_getName(entity) {
+			_getName(entity) {
 				return entity && entity.properties && entity.properties.name || '';
-			}		}
+			}
+		}
 		customElements.define(D2LOrganizationName.is, D2LOrganizationName);
 	</script>
 </dom-module>
