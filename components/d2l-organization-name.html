@@ -24,7 +24,8 @@
 				return {
 					name: {
 						type: Object,
-						computed: '_getName(entity)'
+						computed: '_getName(entity)',
+						notify: true
 					}
 				};
 			}
