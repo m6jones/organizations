@@ -3,13 +3,13 @@
   "description": "",
   "private": true,
   "scripts": {
-    "postinstall": "polymer install",
-    "lint:html": "eslint *.html demo/*.html test/*.html",
-    "lint": "npm run lint:html && polymer lint --input ./{components,test}/*.html",
-    "pretest": "npm run lint",
-    "test": "polymer test --skip-plugin sauce",
-    "test-p": "polymer test -p --skip-plugin sauce",
-    "start": "polymer analyze > analysis.json && polymer serve"
+    "postinstall": "polymer install --variants",
+    "test": "npm run lint && npm run test:polymer:local",
+    "lint": "npm run lint:html && npm run lint:wc",
+    "lint:html": "eslint *.html components/**/*.html test/**/*.{js,html}",
+    "lint:wc": "polymer lint -i *.html components/**/*.html",
+    "test:polymer:local": "polymer test --skip-plugin sauce",
+    "test:polymer:sauce": "polymer test --skip-plugin local"
   },
   "repository": {
     "type": "git",
