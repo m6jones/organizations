@@ -58,8 +58,14 @@
 				_organizationCode: String,
 				_organizationName: String,
 				_semesterName: String,
-				_showOrganizationCode: Boolean,
-				_showSemesterName: Boolean,
+				_showOrganizationCode: {
+					type: Boolean,
+					value: false
+				},
+				_showSemesterName: {
+					type: Boolean,
+					value: false
+				},
 				_showSeparator: {
 					type: Boolean,
 					value: false,
@@ -111,8 +117,8 @@
 					}.bind(this));
 			},
 
-			_fetchSemester: function(organization, showSemester) {
-				if (!showSemester
+			_fetchSemester: function(organization, showSemesterName) {
+				if (!showSemesterName
 					|| !organization
 					|| !organization.hasLinkByRel(this.HypermediaRels.parentSemester)
 				) {
