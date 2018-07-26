@@ -1,40 +1,78 @@
 describe('d2l-organization-info', () => {
 	var sandbox,
 		component,
-		organizationEntity,
-		semesterEntity,
-		presentationEntity;
+		fetchStub;
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 
-		organizationEntity = window.D2L.Hypermedia.Siren.Parse({
+		var organizationEntity = window.D2L.Hypermedia.Siren.Parse({
 			properties: {
 				name: 'Course Name',
-				code: 'SCI100'
+				code: 'SCI100',
+				startDate: null,
+				endDate: null,
+				isActive: false
 			},
 			links: [{
 				rel: ['https://api.brightspace.com/rels/parent-semester'],
 				href: '/semester.json'
 			}]
 		});
-		semesterEntity = window.D2L.Hypermedia.Siren.Parse({
+		var semesterEntity = window.D2L.Hypermedia.Siren.Parse({
 			properties: {
 				name: 'Semester Name'
 			}
 		});
-		presentationEntity = window.D2L.Hypermedia.Siren.Parse({
+		var presentationEntity = window.D2L.Hypermedia.Siren.Parse({
 			properties: {
 				ShowCourseCode: true,
 				ShowSemester: true
 			}
 		});
+		var futureOrganization = window.D2L.Hypermedia.Siren.Parse({
+			properties: {
+				name: 'Course Name',
+				code: 'SCI100',
+				startDate: '2099-01-01T00:00:00.000Z',
+				endDate: '2100-01-01T00:00:00.000Z',
+				isActive: true
+			},
+			links: [{
+				rel: ['https://api.brightspace.com/rels/parent-semester'],
+				href: '/semester.json'
+			}]
+		});
+		var endedOrganization = window.D2L.Hypermedia.Siren.Parse({
+			properties: {
+				name: 'Course Name',
+				code: 'SCI100',
+				startDate: '1999-01-01T00:00:00.000Z',
+				endDate: '2000-01-01T00:00:00.000Z',
+				isActive: true
+			},
+			links: [{
+				rel: ['https://api.brightspace.com/rels/parent-semester'],
+				href: '/semester.json'
+			}]
+		});
 
-		sandbox.stub(window.d2lfetch, 'fetch')
+		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
+		fetchStub
 			.withArgs(sinon.match.has('url', sinon.match('/organization.json')))
 			.returns(Promise.resolve({
 				ok: true,
 				json: () => { return Promise.resolve(organizationEntity); }
+			}))
+			.withArgs(sinon.match.has('url', sinon.match('/future-organization.json')))
+			.returns(Promise.resolve({
+				ok: true,
+				json: () => { return Promise.resolve(futureOrganization); }
+			}))
+			.withArgs(sinon.match.has('url', sinon.match('/ended-organization.json')))
+			.returns(Promise.resolve({
+				ok: true,
+				json: () => { return Promise.resolve(endedOrganization); }
 			}))
 			.withArgs(sinon.match.has('url', sinon.match('/semester.json')))
 			.returns(Promise.resolve({
@@ -131,6 +169,38 @@ describe('d2l-organization-info', () => {
 
 		it('should set _semesterName', () => {
 			expect(component._semesterName).to.equal('Semester Name');
+		});
+	});
+
+	describe('status text', () => {
+		it('should display the "Opens on" text when organization starts in future', done => {
+			component = fixture('future-organization');
+
+			setTimeout(() => {
+				var text = component.$$('div.small-text.flex span:not([hidden])');
+				expect(text.innerText).to.contain('Opens on ');
+				done();
+			});
+		});
+
+		it('should display the "Closed" text when organization ends in past', done => {
+			component = fixture('ended-organization');
+
+			setTimeout(() => {
+				var text = component.$$('div.small-text.flex span:not([hidden])');
+				expect(text.innerText).to.contain('Closed');
+				done();
+			});
+		});
+
+		it('should display the "Inactive" text when organization is inactive', done => {
+			component = fixture('with-href');
+
+			setTimeout(() => {
+				var text = component.$$('div.small-text.flex span:not([hidden])');
+				expect(text.innerText).to.contain('(Inactive)');
+				done();
+			});
 		});
 	});
 });

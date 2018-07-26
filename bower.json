@@ -18,6 +18,7 @@
     "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
     "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.13.0",
     "d2l-icons": "BrightspaceUI/icons#^5.0.1",
+    "d2l-localize-behavior": "BrightspaceUI/localize-behavior#^1.1.2",
     "polymer": "1 - 2",
     "siren-parser-import": "Brightspace/siren-parser-import#^7.0.0"
   },

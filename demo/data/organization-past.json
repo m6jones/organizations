@@ -1,7 +1,10 @@
 {
   "properties": {
     "name": "Course Name",
-    "code": "SCI100"
+    "code": "SCI100",
+    "startDate": null,
+    "endDate": "2000-01-01T00:00:00.000Z",
+    "isActive": true
   },
   "links": [{
     "rel": ["self"],
