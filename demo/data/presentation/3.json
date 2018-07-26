@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "ShowCourseCode": false,
+    "ShowSemester": false
+  },
+  "links": [{
+    "rel": ["self"],
+    "href": "data/presentation/3.json"
+  }]
+}
