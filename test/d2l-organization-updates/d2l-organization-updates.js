@@ -63,11 +63,14 @@ describe('d2l-organization-updates', () => {
 		});
 
 		it('should call _fetchNotifications and _fetchPresentation upon changes to presentation-href', done => {
-			var spyPresentation = sandbox.spy(component, '_fetchPresentation');
+			component.href = '';
 			var spyNotification = sandbox.spy(component, '_fetchNotifications');
-			component.presentationHref = '/presentation.json';
-			expect(spyPresentation).to.have.been.calledOnce;
+			var spyPresentation = sandbox.spy(component, '_fetchPresentation');
+
+			component.presentationHref = 'presentation.json';
+
 			setTimeout(() => {
+				expect(spyPresentation).to.have.been.calledOnce;
 				expect(spyNotification).to.have.been.calledOnce;
 				done();
 			});

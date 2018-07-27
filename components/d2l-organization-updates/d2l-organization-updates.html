@@ -1,12 +1,8 @@
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
-<link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
 <link rel="import" href="../../../d2l-icons/d2l-icon.html">
 <link rel="import" href="../../../d2l-icons/tier2-icons.html">
 <link rel="import" href="../../../d2l-icons/tier1-icons.html">
-<link rel="import" href="../../../d2l-loading-spinner/d2l-loading-spinner.html">
-<link rel="import" href="../../../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
 <link rel="import" href="../../../siren-parser-import/siren-parser.html">
 
 <!--
@@ -98,7 +94,8 @@ Polymer-based web component for a course/enrollment card.
 				_notificationMap: {
 					type: Object,
 					readOnly: true,
-					value: function() { return {
+					value: function() {
+						return {
 							UnattemptedQuizzes: {
 								index: 'unattemptedQuizzes',
 								presentationLink: 'ShowUnattemptedQuizzes',
@@ -134,13 +131,11 @@ Polymer-based web component for a course/enrollment card.
 				}
 			},
 			behaviors: [
-				window.D2L.Hypermedia.HMConstantsBehavior,
-				D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior
 			],
 			observers: [
 				'_fetchNotifications(href, _presentation)',
 				'_fetchPresentation(presentationHref)'
-			 ],
+			],
 			ready: function() { },
 			attached: function() { },
 			detached: function() { },
@@ -180,7 +175,7 @@ Polymer-based web component for a course/enrollment card.
 					return;
 				}
 
-				options = this._notificationMap[notification];
+				var options = this._notificationMap[notification];
 				if (!options.index
 					|| !options.icon
 					|| !options.presentationLink
@@ -194,7 +189,7 @@ Polymer-based web component for a course/enrollment card.
 					this._notifications[options.index] = {
 						icon: options.icon,
 						updateCount: 0
-					}
+					};
 				}
 
 				this._notifications[options.index].updateCount += numberOfUpdates;
