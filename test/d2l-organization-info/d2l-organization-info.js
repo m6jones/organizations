@@ -73,7 +73,7 @@ describe('d2l-organization-info', () => {
 			var spy = sandbox.spy(component, '_fetchSemester');
 
 			component._organization = window.D2L.Hypermedia.Siren.Parse({});
-			expect(spy).to.have.been.called;
+			expect(spy).to.have.been.calledOnce;
 
 			component._showSemesterName = true;
 			expect(spy.callCount).to.equal(2);
