@@ -157,6 +157,7 @@ Polymer-based web component for a course/enrollment card.
 
 				return this._fetchSirenEntity(notificationsUrl)
 					.then(function(notifications) {
+						this._notifications = {};
 						if (!(notifications = notifications.properties)) {
 							return;
 						}
@@ -165,9 +166,7 @@ Polymer-based web component for a course/enrollment card.
 								this._prepareNotification(presentation, index, notifications[index]);
 							}
 						}
-						notifications = this._notifications;
-						this._notifications = {};
-						this._notifications = notifications;
+						this._reset();
 					}.bind(this));
 			},
 			_prepareNotification: function(presentation, notification, numberOfUpdates) {
@@ -181,7 +180,6 @@ Polymer-based web component for a course/enrollment card.
 					|| !options.presentationLink
 					|| !presentation[options.presentationLink]
 				) {
-					delete this._notifications[options.index];
 					return;
 				}
 
@@ -225,6 +223,11 @@ Polymer-based web component for a course/enrollment card.
 				return Object.keys(obj).map(function(key) {
 					return obj[key];
 				});
+			},
+			_reset: function() {
+				var notifications = this._notifications;
+				this._notifications = {};
+				this._notifications = notifications;
 			}
 		});
 	</script>
