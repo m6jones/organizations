@@ -1,0 +1,156 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
+<link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
+<link rel="import" href="../../../d2l-icons/d2l-icon.html">
+<link rel="import" href="../../../d2l-icons/tier1-icons.html">
+<link rel="import" href="../../../siren-parser-import/siren-parser.html">
+
+<dom-module id="d2l-organization-info">
+	<template strip-whitespace>
+		<style>
+			:host {
+				overflow: hidden;
+				word-wrap: break-word; /* IE/Edge */
+				overflow-wrap: break-word; /* replaces 'word-wrap' in Firefox, Chrome, Safari */
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+			}
+
+			d2l-icon {
+				color: var(--d2l-color-tungsten);
+				--d2l-icon-width: 18px;
+				--d2l-icon-height: 18px;
+			}
+			d2l-icon[hidden] {
+				display: none;
+			}
+
+			.small-text {
+				-ms-word-break: break-all;
+				word-break: break-all;
+				word-break: break-word; /* Best case, only works in Chrome though */
+				@apply --d2l-body-compact-text;
+			}
+
+			.uppercase {
+				text-transform: uppercase;
+			}
+		</style>
+
+		<span>[[_organizationName]]</span>
+		<div class="small-text">
+			<span hidden$="[[!_showOrganizationCode]]" class="uppercase">[[_organizationCode]]</span>
+			<d2l-icon hidden$="[[!_showSeparator]]" icon="d2l-tier1:bullet"></d2l-icon>
+			<span hidden$="[[!_showSemesterName]]">[[_semesterName]]</span>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'd2l-organization-info',
+
+			properties: {
+				href: String,
+				presentationHref: String,
+
+				_organization: Object,
+				_organizationCode: String,
+				_organizationName: String,
+				_semesterName: String,
+				_showOrganizationCode: {
+					type: Boolean,
+					value: false
+				},
+				_showSemesterName: {
+					type: Boolean,
+					value: false
+				},
+				_showSeparator: {
+					type: Boolean,
+					value: false,
+					computed: '_computeShowSeparator(_showOrganizationCode, _showSemesterName, _organizationCode, _semesterName)'
+				}
+			},
+
+			behaviors: [
+				window.D2L.Hypermedia.HMConstantsBehavior
+			],
+
+			observers: [
+				'_fetchOrganization(href)',
+				'_fetchPresentation(presentationHref)',
+				'_fetchSemester(_organization, _showSemesterName)'
+			],
+
+			_computeShowSeparator: function(showOrganizationCode, showSemester, organizationCode, semesterName) {
+				return showSemester
+					&& showOrganizationCode
+					&& semesterName
+					&& semesterName.length > 0
+					&& organizationCode
+					&& organizationCode.length > 0;
+			},
+
+			_fetchOrganization: function(organizationHref) {
+				return this._fetchSirenEntity(organizationHref)
+					.then(function(organizationEntity) {
+						this._organization = organizationEntity;
+						this._organizationName = organizationEntity
+							&& organizationEntity.properties
+							&& organizationEntity.properties.name;
+						this._organizationCode = organizationEntity
+							&& organizationEntity.properties
+							&& organizationEntity.properties.code;
+					}.bind(this));
+			},
+
+			_fetchPresentation: function(presentationHref) {
+				return this._fetchSirenEntity(presentationHref)
+					.then(function(presentationEntity) {
+						this._showOrganizationCode = presentationEntity
+							&& presentationEntity.properties
+							&& presentationEntity.properties.ShowCourseCode;
+						this._showSemesterName = presentationEntity
+							&& presentationEntity.properties
+							&& presentationEntity.properties.ShowSemester;
+					}.bind(this));
+			},
+
+			_fetchSemester: function(organization, showSemesterName) {
+				if (!showSemesterName
+					|| !organization
+					|| !organization.hasLinkByRel(this.HypermediaRels.parentSemester)
+				) {
+					return Promise.resolve();
+				}
+
+				var semesterHref = organization.getLinkByRel(this.HypermediaRels.parentSemester).href;
+				return this._fetchSirenEntity(semesterHref)
+					.then(function(semesterEntity) {
+						this._semesterName = semesterEntity
+							&& semesterEntity.properties
+							&& semesterEntity.properties.name;
+					}.bind(this));
+			},
+
+			_fetchSirenEntity: function(url) {
+				if (!url) {
+					return;
+				}
+
+				return window.d2lfetch
+					.fetch(new Request(url, {
+						headers: { Accept: 'application/vnd.siren+json' },
+					}))
+					.then(function(response) {
+						if (response.ok) {
+							return response.json();
+						}
+						return Promise.reject(response.status + ' ' + response.statusText);
+					})
+					.then(window.D2L.Hypermedia.Siren.Parse);
+			}
+		});
+	</script>
+</dom-module>
