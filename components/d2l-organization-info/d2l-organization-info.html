@@ -106,6 +106,10 @@
 			},
 
 			_fetchPresentation: function(presentationHref) {
+				if (!presentationHref) {
+					return Promise.resolve();
+				}
+
 				return this._fetchSirenEntity(presentationHref)
 					.then(function(presentationEntity) {
 						this._showOrganizationCode = presentationEntity
