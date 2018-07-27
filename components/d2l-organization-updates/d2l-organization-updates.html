@@ -1,0 +1,236 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../iron-a11y-announcer/iron-a11y-announcer.html">
+<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
+<link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
+<link rel="import" href="../../../d2l-icons/d2l-icon.html">
+<link rel="import" href="../../../d2l-icons/tier2-icons.html">
+<link rel="import" href="../../../d2l-icons/tier1-icons.html">
+<link rel="import" href="../../../d2l-loading-spinner/d2l-loading-spinner.html">
+<link rel="import" href="../../../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
+<link rel="import" href="../../../siren-parser-import/siren-parser.html">
+
+<!--
+`d2l-organization-updates`
+
+Polymer-based web component for a course/enrollment card.
+
+@demo demo/d2l-organization-updates/d2l-organization-updates-demo.html Organization Updates
+-->
+
+<dom-module id="d2l-organization-updates">
+	<template strip-whitespace>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+				margin: auto;
+    			width: fit-content
+			}
+			.container {
+				position: relative;
+				width: 18px;
+				height: 18px;
+				margin: 12px;
+				font-size: 18px;
+			}
+			d2l-icon {
+				color: black;
+				--d2l-icon-width: 18px;
+				--d2l-icon-height: 18px;
+			}
+			.update-text-box {
+				position: absolute;
+				top: -4px;
+				left: 9px;
+				background-color: white;
+				border: 2px solid var(--d2l-color-carnelian);
+    			border-radius: 0.2rem;
+				padding: 0.0rem 0.035rem 0.075rem 0.065rem;
+				min-width: 0.75rem;
+			}
+			.update-text {
+				color: var(--d2l-color-carnelian);
+				line-height: 100%;
+				font-weight: 700;
+				font-size: 0.5rem;
+				text-align: center;
+				word-wrap: break-word;
+				margin-bottom: 0px;
+				box-sizing: content-box;
+			}
+			.container[disabled] .update-text-box {
+				display: none;
+			}
+			.container[disabled] d2l-icon {
+				color: var(--d2l-color-mica);
+			}
+		</style>
+		<template is="dom-repeat" items="[[_toArray(_notifications)]]">
+			<span class="container" disabled$="[[_isDisabled(item.updateCount)]]">
+				<d2l-icon icon="[[item.icon]]"></d2l-icon>
+				<span class="update-text-box">
+					<div class="update-text">[[_displayUpdateCount(item.updateCount)]]</div>
+				</span>
+			</span>
+
+		</template>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-organization-updates',
+
+			properties: {
+				href: String,
+				presentationHref: String,
+				maxUpdateCount: {
+					type: Number,
+					value: 99
+				},
+
+				_presentation: {
+					type: Object,
+					value: function() { return {}; }
+				},
+				_notifications: {
+					type: Object,
+					value: function() { return {}; }
+				},
+				_notificationMap: {
+					type: Object,
+					readOnly: true,
+					value: function() { return {
+							UnattemptedQuizzes: {
+								index: 'unattemptedQuizzes',
+								presentationLink: 'ShowUnattemptedQuizzes',
+								icon: 'd2l-tier2:quizzing'
+							},
+							UnreadAssignmentFeedback: {
+								index: 'unreadAssignmentFeedback',
+								presentationLink: 'ShowDropboxUnreadFeedback',
+								icon: 'd2l-tier2:feedback'
+							},
+							UngradedQuizzes: {
+								index: 'ungradedQuizzes',
+								presentationLink: 'ShowUngradedQuizAttempts',
+								icon: 'd2l-tier2:quiz-submissions'
+							},
+							UnreadDiscussions: {
+								index: 'unreadDiscussions',
+								presentationLink: 'ShowUnreadDiscussionMessages',
+								icon: 'd2l-tier2:discussions'
+							},
+							UnapprovedDiscussions: {
+								index: 'unreadDiscussions',
+								presentationLink: 'ShowUnreadDiscussionMessages',
+								icon: 'd2l-tier2:discussions'
+							},
+							UnreadAssignmentSubmissions: {
+								index: 'unreadAssignmentSubmissions',
+								presentationLink: 'ShowUnreadDropboxSubmissions',
+								icon: 'd2l-tier2:assignments'
+							}
+						};
+					}
+				}
+			},
+			behaviors: [
+				window.D2L.Hypermedia.HMConstantsBehavior,
+				D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior
+			],
+			observers: [
+				'_fetchNotifications(href, _presentation)',
+				'_fetchPresentation(presentationHref)'
+			 ],
+			ready: function() { },
+			attached: function() { },
+			detached: function() { },
+
+			_fetchPresentation: function(presentationUrl) {
+				if (!presentationUrl) {
+					return Promise.resolve();
+				}
+
+				return this._fetchSirenEntity(presentationUrl)
+					.then(function(presentation) {
+						this._presentation = presentation.properties || {};
+					}.bind(this));
+			},
+			_fetchNotifications: function(notificationsUrl, presentation) {
+				if (!notificationsUrl || !presentation) {
+					return Promise.resolve();
+				}
+
+				return this._fetchSirenEntity(notificationsUrl)
+					.then(function(notifications) {
+						if (!(notifications = notifications.properties)) {
+							return;
+						}
+						for (var index in notifications) {
+							if (notifications.hasOwnProperty(index)) {
+								this._prepareNotification(presentation, index, notifications[index]);
+							}
+						}
+						notifications = this._notifications;
+						this._notifications = {};
+						this._notifications = notifications;
+					}.bind(this));
+			},
+			_prepareNotification: function(presentation, notification, numberOfUpdates) {
+				if (!this._notificationMap.hasOwnProperty(notification)) {
+					return;
+				}
+
+				options = this._notificationMap[notification];
+				if (!options.index
+					|| !options.icon
+					|| !options.presentationLink
+					|| !presentation[options.presentationLink]
+				) {
+					delete this._notifications[options.index];
+					return;
+				}
+
+				if (!this._notifications.hasOwnProperty(options.index)) {
+					this._notifications[options.index] = {
+						icon: options.icon,
+						updateCount: 0
+					}
+				}
+
+				this._notifications[options.index].updateCount += numberOfUpdates;
+			},
+			_displayUpdateCount: function(count) {
+				return count > this.maxUpdateCount ? this.maxUpdateCount + '+' : count;
+			},
+			_isDisabled: function(count) {
+				return (count <= 0);
+			},
+			_fetchSirenEntity: function(url) {
+				if (!url) {
+					return;
+				}
+
+				return window.d2lfetch
+					.fetch(new Request(url, {
+						headers: { Accept: 'application/vnd.siren+json' },
+					}))
+					.then(this._responseToSirenEntity.bind(this));
+			},
+			_responseToSirenEntity: function(response) {
+				if (response.ok) {
+					return response
+						.json()
+						.then(function(json) {
+							return window.D2L.Hypermedia.Siren.Parse(json);
+						});
+				}
+				return Promise.reject(response.status + ' ' + response.statusText);
+			},
+			_toArray: function(obj) {
+				return Object.keys(obj).map(function(key) {
+					return obj[key];
+				});
+			}
+		});
+	</script>
+</dom-module>
