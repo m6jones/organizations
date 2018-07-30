@@ -87,10 +87,6 @@ Polymer-based web component for a organization updates.
 					type: Object,
 					value: function() { return {}; }
 				},
-				_maxUpdateCount: {
-					type: Number,
-					value: 99
-				},
 				_notificationMap: {
 					type: Object,
 					readOnly: true,
@@ -130,8 +126,6 @@ Polymer-based web component for a organization updates.
 					}
 				}
 			},
-			behaviors: [
-			],
 			observers: [
 				'_fetchNotifications(href, _presentation)',
 				'_fetchPresentation(presentationHref)'
@@ -157,14 +151,12 @@ Polymer-based web component for a organization updates.
 						if (!(notificationsInfo = notificationsInfo.properties)) {
 							return;
 						}
-
 						var notifications = {};
 						for (var key in notificationsInfo) {
 							if (notificationsInfo.hasOwnProperty(key)) {
 								this._prepareNotification(notifications, presentation, key, notificationsInfo[key]);
 							}
 						}
-
 						this._notifications = notifications;
 					}.bind(this));
 			},
@@ -213,7 +205,7 @@ Polymer-based web component for a organization updates.
 				return Promise.reject(response.status + ' ' + response.statusText);
 			},
 			_notificationsToArray: function(notification) {
-				var maxCount = this._maxUpdateCount;
+				var maxCount = 99;
 				return Object.keys(notification).map(function(key) {
 					notification[key].isDisabled = (notification[key].updateCount <= 0);
 					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
