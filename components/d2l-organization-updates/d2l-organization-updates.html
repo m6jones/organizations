@@ -8,7 +8,7 @@
 <!--
 `d2l-organization-updates`
 
-Polymer-based web component for a course/enrollment card.
+Polymer-based web component for a organization updates.
 
 @demo demo/d2l-organization-updates/d2l-organization-updates-demo.html Organization Updates
 -->
@@ -17,27 +17,28 @@ Polymer-based web component for a course/enrollment card.
 	<template strip-whitespace>
 		<style>
 			:host {
-				display: block;
+				display: flex;
 				position: relative;
 				margin: auto;
-    			width: fit-content
+    			width: fit-content;
+				--d2l-organization-updates-size: 18px;
+				flex-direction: row;
 			}
 			.container {
 				position: relative;
-				width: 18px;
-				height: 18px;
+				width: var(--d2l-organization-updates-size);
+				height: var(--d2l-organization-updates-size);
 				margin: 12px;
-				font-size: 18px;
 			}
 			d2l-icon {
 				color: black;
-				--d2l-icon-width: 18px;
-				--d2l-icon-height: 18px;
+				--d2l-icon-width: var(--d2l-organization-updates-size);
+				--d2l-icon-height: var(--d2l-organization-updates-size);
 			}
 			.update-text-box {
 				position: absolute;
-				top: -4px;
-				left: 9px;
+				top: -2px;
+				right: -9px;
 				background-color: white;
 				border: 2px solid var(--d2l-color-carnelian);
     			border-radius: 0.2rem;
@@ -61,14 +62,13 @@ Polymer-based web component for a course/enrollment card.
 				color: var(--d2l-color-mica);
 			}
 		</style>
-		<template is="dom-repeat" items="[[_toArray(_notifications)]]">
-			<span class="container" disabled$="[[_isDisabled(item.updateCount)]]">
+		<template is="dom-repeat" items="[[_notificationsToArray(_notifications)]]">
+			<span class="container" disabled$="[[item.isDisabled]]">
 				<d2l-icon icon="[[item.icon]]"></d2l-icon>
 				<span class="update-text-box">
-					<div class="update-text">[[_displayUpdateCount(item.updateCount)]]</div>
+					<div class="update-text">[[item.updateCount]]</div>
 				</span>
 			</span>
-
 		</template>
 	</template>
 	<script>
@@ -78,10 +78,6 @@ Polymer-based web component for a course/enrollment card.
 			properties: {
 				href: String,
 				presentationHref: String,
-				maxUpdateCount: {
-					type: Number,
-					value: 99
-				},
 
 				_presentation: {
 					type: Object,
@@ -91,38 +87,42 @@ Polymer-based web component for a course/enrollment card.
 					type: Object,
 					value: function() { return {}; }
 				},
+				_maxUpdateCount: {
+					type: Number,
+					value: 99
+				},
 				_notificationMap: {
 					type: Object,
 					readOnly: true,
 					value: function() {
 						return {
 							UnattemptedQuizzes: {
-								index: 'unattemptedQuizzes',
+								key: 'unattemptedQuizzes',
 								presentationLink: 'ShowUnattemptedQuizzes',
 								icon: 'd2l-tier2:quizzing'
 							},
 							UnreadAssignmentFeedback: {
-								index: 'unreadAssignmentFeedback',
+								key: 'unreadAssignmentFeedback',
 								presentationLink: 'ShowDropboxUnreadFeedback',
 								icon: 'd2l-tier2:feedback'
 							},
 							UngradedQuizzes: {
-								index: 'ungradedQuizzes',
+								key: 'ungradedQuizzes',
 								presentationLink: 'ShowUngradedQuizAttempts',
 								icon: 'd2l-tier2:quiz-submissions'
 							},
 							UnreadDiscussions: {
-								index: 'unreadDiscussions',
+								key: 'unreadDiscussions',
 								presentationLink: 'ShowUnreadDiscussionMessages',
 								icon: 'd2l-tier2:discussions'
 							},
 							UnapprovedDiscussions: {
-								index: 'unreadDiscussions',
+								key: 'unreadDiscussions',
 								presentationLink: 'ShowUnreadDiscussionMessages',
 								icon: 'd2l-tier2:discussions'
 							},
 							UnreadAssignmentSubmissions: {
-								index: 'unreadAssignmentSubmissions',
+								key: 'unreadAssignmentSubmissions',
 								presentationLink: 'ShowUnreadDropboxSubmissions',
 								icon: 'd2l-tier2:assignments'
 							}
@@ -136,9 +136,6 @@ Polymer-based web component for a course/enrollment card.
 				'_fetchNotifications(href, _presentation)',
 				'_fetchPresentation(presentationHref)'
 			],
-			ready: function() { },
-			attached: function() { },
-			detached: function() { },
 
 			_fetchPresentation: function(presentationUrl) {
 				if (!presentationUrl) {
@@ -156,26 +153,28 @@ Polymer-based web component for a course/enrollment card.
 				}
 
 				return this._fetchSirenEntity(notificationsUrl)
-					.then(function(notifications) {
-						this._notifications = {};
-						if (!(notifications = notifications.properties)) {
+					.then(function(notificationsInfo) {
+						if (!(notificationsInfo = notificationsInfo.properties)) {
 							return;
 						}
-						for (var index in notifications) {
-							if (notifications.hasOwnProperty(index)) {
-								this._prepareNotification(presentation, index, notifications[index]);
+
+						var notifications = {};
+						for (var key in notificationsInfo) {
+							if (notificationsInfo.hasOwnProperty(key)) {
+								this._prepareNotification(notifications, presentation, key, notificationsInfo[key]);
 							}
 						}
-						this._reset();
+
+						this._notifications = notifications;
 					}.bind(this));
 			},
-			_prepareNotification: function(presentation, notification, numberOfUpdates) {
+			_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
 				if (!this._notificationMap.hasOwnProperty(notification)) {
 					return;
 				}
 
 				var options = this._notificationMap[notification];
-				if (!options.index
+				if (!options.key
 					|| !options.icon
 					|| !options.presentationLink
 					|| !presentation[options.presentationLink]
@@ -183,20 +182,14 @@ Polymer-based web component for a course/enrollment card.
 					return;
 				}
 
-				if (!this._notifications.hasOwnProperty(options.index)) {
-					this._notifications[options.index] = {
+				if (!notifications.hasOwnProperty(options.key)) {
+					notifications[options.key] = {
 						icon: options.icon,
 						updateCount: 0
 					};
 				}
 
-				this._notifications[options.index].updateCount += numberOfUpdates;
-			},
-			_displayUpdateCount: function(count) {
-				return count > this.maxUpdateCount ? this.maxUpdateCount + '+' : count;
-			},
-			_isDisabled: function(count) {
-				return (count <= 0);
+				notifications[options.key].updateCount += numberOfUpdates;
 			},
 			_fetchSirenEntity: function(url) {
 				if (!url) {
@@ -219,15 +212,13 @@ Polymer-based web component for a course/enrollment card.
 				}
 				return Promise.reject(response.status + ' ' + response.statusText);
 			},
-			_toArray: function(obj) {
-				return Object.keys(obj).map(function(key) {
-					return obj[key];
+			_notificationsToArray: function(notification) {
+				var maxCount = this._maxUpdateCount;
+				return Object.keys(notification).map(function(key) {
+					notification[key].isDisabled = (notification[key].updateCount <= 0);
+					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
+					return notification[key];
 				});
-			},
-			_reset: function() {
-				var notifications = this._notifications;
-				this._notifications = {};
-				this._notifications = notifications;
 			}
 		});
 	</script>
