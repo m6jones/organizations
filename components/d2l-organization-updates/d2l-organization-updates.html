@@ -1,0 +1,218 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
+<link rel="import" href="../../../d2l-icons/d2l-icon.html">
+<link rel="import" href="../../../d2l-icons/tier2-icons.html">
+<link rel="import" href="../../../d2l-icons/tier1-icons.html">
+<link rel="import" href="../../../siren-parser-import/siren-parser.html">
+
+<!--
+`d2l-organization-updates`
+
+Polymer-based web component for a organization updates.
+
+@demo demo/d2l-organization-updates/d2l-organization-updates-demo.html Organization Updates
+-->
+
+<dom-module id="d2l-organization-updates">
+	<template strip-whitespace>
+		<style>
+			:host {
+				display: flex;
+				position: relative;
+				margin: auto;
+				--d2l-organization-updates-size: 18px;
+				flex-direction: row;
+				justify-content: space-evenly;
+				flex-wrap: wrap;
+			}
+			.container {
+				position: relative;
+				width: var(--d2l-organization-updates-size);
+				height: var(--d2l-organization-updates-size);
+				margin: 12px;
+			}
+			d2l-icon {
+				color: black;
+				--d2l-icon-width: var(--d2l-organization-updates-size);
+				--d2l-icon-height: var(--d2l-organization-updates-size);
+			}
+			.update-text-box {
+				position: absolute;
+				top: -2px;
+				right: -9px;
+				background-color: white;
+				border: 2px solid var(--d2l-color-carnelian);
+    			border-radius: 0.2rem;
+				padding: 0.0rem 0.035rem 0.075rem 0.065rem;
+				min-width: 0.75rem;
+			}
+			.update-text {
+				color: var(--d2l-color-carnelian);
+				line-height: 100%;
+				font-weight: 700;
+				font-size: 0.5rem;
+				text-align: center;
+				word-wrap: break-word;
+				margin-bottom: 0px;
+				box-sizing: content-box;
+			}
+			.container[disabled] .update-text-box {
+				display: none;
+			}
+			.container[disabled] d2l-icon {
+				color: var(--d2l-color-mica);
+			}
+		</style>
+		<template is="dom-repeat" items="[[_notificationsToArray(_notifications)]]">
+			<span class="container" disabled$="[[item.isDisabled]]">
+				<d2l-icon icon="[[item.icon]]"></d2l-icon>
+				<span class="update-text-box">
+					<div class="update-text">[[item.updateCount]]</div>
+				</span>
+			</span>
+		</template>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-organization-updates',
+
+			properties: {
+				href: String,
+				presentationHref: String,
+
+				_presentation: {
+					type: Object,
+					value: function() { return {}; }
+				},
+				_notifications: {
+					type: Object,
+					value: function() { return {}; }
+				},
+				_notificationMap: {
+					type: Object,
+					readOnly: true,
+					value: function() {
+						return {
+							UnattemptedQuizzes: {
+								key: 'unattemptedQuizzes',
+								presentationLink: 'ShowUnattemptedQuizzes',
+								icon: 'd2l-tier2:quizzing'
+							},
+							UnreadAssignmentFeedback: {
+								key: 'unreadAssignmentFeedback',
+								presentationLink: 'ShowDropboxUnreadFeedback',
+								icon: 'd2l-tier2:feedback'
+							},
+							UngradedQuizzes: {
+								key: 'ungradedQuizzes',
+								presentationLink: 'ShowUngradedQuizAttempts',
+								icon: 'd2l-tier2:quiz-submissions'
+							},
+							UnreadDiscussions: {
+								key: 'unreadDiscussions',
+								presentationLink: 'ShowUnreadDiscussionMessages',
+								icon: 'd2l-tier2:discussions'
+							},
+							UnapprovedDiscussions: {
+								key: 'unreadDiscussions',
+								presentationLink: 'ShowUnreadDiscussionMessages',
+								icon: 'd2l-tier2:discussions'
+							},
+							UnreadAssignmentSubmissions: {
+								key: 'unreadAssignmentSubmissions',
+								presentationLink: 'ShowUnreadDropboxSubmissions',
+								icon: 'd2l-tier2:assignments'
+							}
+						};
+					}
+				}
+			},
+			observers: [
+				'_fetchNotifications(href, _presentation)',
+				'_fetchPresentation(presentationHref)'
+			],
+
+			_fetchPresentation: function(presentationUrl) {
+				if (!presentationUrl) {
+					return Promise.resolve();
+				}
+
+				return this._fetchSirenEntity(presentationUrl)
+					.then(function(presentation) {
+						this._presentation = presentation.properties || {};
+					}.bind(this));
+			},
+			_fetchNotifications: function(notificationsUrl, presentation) {
+				if (!notificationsUrl || !presentation) {
+					return Promise.resolve();
+				}
+
+				return this._fetchSirenEntity(notificationsUrl)
+					.then(function(notificationsInfo) {
+						if (!(notificationsInfo = notificationsInfo.properties)) {
+							return;
+						}
+						var notifications = {};
+						for (var key in notificationsInfo) {
+							if (notificationsInfo.hasOwnProperty(key)) {
+								this._prepareNotification(notifications, presentation, key, notificationsInfo[key]);
+							}
+						}
+						this._notifications = notifications;
+					}.bind(this));
+			},
+			_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
+				if (!this._notificationMap.hasOwnProperty(notification)) {
+					return;
+				}
+
+				var options = this._notificationMap[notification];
+				if (!options.key
+					|| !options.icon
+					|| !options.presentationLink
+					|| !presentation[options.presentationLink]
+				) {
+					return;
+				}
+
+				if (!notifications.hasOwnProperty(options.key)) {
+					notifications[options.key] = {
+						icon: options.icon,
+						updateCount: 0
+					};
+				}
+
+				notifications[options.key].updateCount += numberOfUpdates;
+			},
+			_fetchSirenEntity: function(url) {
+				if (!url) {
+					return;
+				}
+
+				return window.d2lfetch
+					.fetch(new Request(url, {
+						headers: { Accept: 'application/vnd.siren+json' },
+					}))
+					.then(this._responseToSirenEntity.bind(this));
+			},
+			_responseToSirenEntity: function(response) {
+				if (response.ok) {
+					return response
+						.json()
+						.then(function(json) {
+							return window.D2L.Hypermedia.Siren.Parse(json);
+						});
+				}
+				return Promise.reject(response.status + ' ' + response.statusText);
+			},
+			_notificationsToArray: function(notification) {
+				var maxCount = 99;
+				return Object.keys(notification).map(function(key) {
+					notification[key].isDisabled = (notification[key].updateCount <= 0);
+					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
+					return notification[key];
+				});
+			}
+		});
+	</script>
+</dom-module>

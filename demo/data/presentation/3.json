@@ -1,7 +1,8 @@
 {
   "properties": {
     "ShowCourseCode": false,
-    "ShowSemester": false
+    "ShowSemester": false,
+    "ShowUnattemptedQuizzes":true
   },
   "links": [{
     "rel": ["self"],
