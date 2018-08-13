@@ -3,7 +3,9 @@
 <link rel="import" href="../../../d2l-icons/d2l-icon.html">
 <link rel="import" href="../../../d2l-icons/tier2-icons.html">
 <link rel="import" href="../../../d2l-icons/tier1-icons.html">
+<link rel="import" href="../../../d2l-tooltip/d2l-tooltip.html">
 <link rel="import" href="../../../siren-parser-import/siren-parser.html">
+<link rel="import" href="localize-behavior.html">
 
 <!--
 `d2l-organization-updates`
@@ -20,7 +22,6 @@ Polymer-based web component for a organization updates.
 				display: flex;
 				position: relative;
 				margin: auto;
-				--d2l-organization-updates-size: 18px;
 				flex-direction: row;
 				justify-content: space-evenly;
 				flex-wrap: wrap;
@@ -28,34 +29,31 @@ Polymer-based web component for a organization updates.
 			}
 			.container {
 				position: relative;
-				width: var(--d2l-organization-updates-size);
-				height: var(--d2l-organization-updates-size);
+				width: var(--d2l-organization-updates-size, 18px);
+				height: var(--d2l-organization-updates-size, 18px);
 				max-width: 20%;
 			}
 			d2l-icon {
 				color: black;
-				--d2l-icon-width: var(--d2l-organization-updates-size);
-				--d2l-icon-height: var(--d2l-organization-updates-size);
+				--d2l-icon-width: var(--d2l-organization-updates-size, 18px);
+				--d2l-icon-height: var(--d2l-organization-updates-size, 18px);
+				vertical-align: top;
 			}
 			.update-text-box {
 				position: absolute;
-				top: -2px;
-				right: -9px;
+				top: -50%;
+				left: 50%;
 				background-color: white;
 				border: 2px solid var(--d2l-color-carnelian);
     			border-radius: 0.2rem;
 				padding: 0.0rem 0.035rem 0.075rem 0.065rem;
-				min-width: 0.75rem;
 			}
 			.update-text {
 				color: var(--d2l-color-carnelian);
 				line-height: 100%;
-				font-weight: 700;
-				font-size: 0.5rem;
-				text-align: center;
-				word-wrap: break-word;
-				margin-bottom: 0px;
-				box-sizing: content-box;
+				font-weight: 400;
+				font-size: 0.555rem;
+				margin: 0.05rem 0.07rem 0 0.05rem;
 			}
 			.container[disabled] .update-text-box {
 				display: none;
@@ -63,14 +61,20 @@ Polymer-based web component for a organization updates.
 			.container[disabled] d2l-icon {
 				color: var(--d2l-color-mica);
 			}
+			d2l-tooltip {
+				width: fit-content;
+				@apply --d2l-body-small-text;
+				color: #FFFFFF;
+			}
 		</style>
 		<template is="dom-repeat" items="[[_notificationsToArray(_notifications)]]">
-			<span class="container" disabled$="[[item.isDisabled]]">
+			<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
 				<d2l-icon icon="[[item.icon]]"></d2l-icon>
 				<span class="update-text-box">
 					<div class="update-text">[[item.updateCount]]</div>
 				</span>
 			</span>
+			<d2l-tooltip for="[[item.key]]" position="top">[[item.toolTip]]</d2l-tooltip>
 		</template>
 	</template>
 	<script>
@@ -128,6 +132,11 @@ Polymer-based web component for a organization updates.
 					}
 				}
 			},
+
+			behaviors: [
+				D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehavior
+			],
+
 			observers: [
 				'_fetchNotifications(href, _presentation)',
 				'_fetchPresentation(presentationHref)'
@@ -211,8 +220,11 @@ Polymer-based web component for a organization updates.
 				return Object.keys(notification).map(function(key) {
 					notification[key].isDisabled = (notification[key].updateCount <= 0);
 					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
+					notification[key].key = key;
+					notification[key].toolTip = this.localize(key);
+
 					return notification[key];
-				});
+				}.bind(this));
 			}
 		});
 	</script>
