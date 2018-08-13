@@ -113,9 +113,11 @@ describe('d2l-organization-updates', () => {
 
 			// UnreadAssignmentFeedback: 0,
 			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.true;
 
 			// UngradedQuizzes: 4
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('4');
@@ -123,10 +125,12 @@ describe('d2l-organization-updates', () => {
 			// UnreadDiscussions: 20
 			// UnapprovedDiscussions: 79
 			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('99');
 
 			// UnreadAssignmentSubmissions: 200
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('99+');
