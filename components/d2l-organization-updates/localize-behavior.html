@@ -1,0 +1,156 @@
+<link rel="import" href="../../../d2l-localize-behavior/d2l-localize-behavior.html">
+
+<script>
+	window.D2L = window.D2L || {};
+	window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+	window.D2L.PolymerBehaviors.OrganizationUpdates = window.D2L.PolymerBehaviors.OrganizationUpdates || {};
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehaviorImpl = {
+		properties: {
+			locale: {
+				type: String,
+				value: function() {
+					return document.documentElement.lang
+						|| document.documentElement.getAttribute('data-lang-default')
+						|| 'en-us';
+				}
+			},
+			resources: {
+				value: function() {
+					return {
+						'en': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'ar': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'de': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'es': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'fi': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'fr': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'ja': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'ko': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'nb': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'nl': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'pt': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'sv': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'tr': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'zh': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						},
+						'zh-tw': {
+							'brackets': '({content})',
+							'unattemptedQuizzes': 'Unattempted Quizzes',
+							'unreadAssignmentFeedback': 'Assignment Feedback',
+							'ungradedQuizzes': 'Ungraded Quizzes',
+							'unreadDiscussions': 'Discussions',
+							'unreadAssignmentSubmissions': 'Assignment Submissions',
+						}
+					};
+				}
+			}
+		}
+	};
+
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehavior = [
+		D2L.PolymerBehaviors.LocalizeBehavior,
+		D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehaviorImpl
+	];
+</script>

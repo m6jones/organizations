@@ -110,26 +110,36 @@ describe('d2l-organization-updates', () => {
 			// UnattemptedQuizzes: -20,
 			var notification = component.$$('.container');
 			expect(notification.getAttribute('disabled')).is.equal.true;
+			notification = notification.nextSibling;
+			expect(notification.innerHTML).to.contain('Unattempted Quizzes');
 
 			// UnreadAssignmentFeedback: 0,
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.true;
+			notification = notification.nextSibling;
+			expect(notification.innerHTML).to.contain('Assignment Feedback');
 
 			// UngradedQuizzes: 4
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('4');
+			notification = notification.nextSibling;
+			expect(notification.innerHTML).to.contain('Ungraded Quizzes');
 
 			// UnreadDiscussions: 20
 			// UnapprovedDiscussions: 79
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('99');
+			notification = notification.nextSibling;
+			expect(notification.innerHTML).to.contain('Discussions');
 
 			// UnreadAssignmentSubmissions: 200
 			notification = notification.nextSibling;
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text').innerHTML).is.equal('99+');
+			notification = notification.nextSibling;
+			expect(notification.innerHTML).to.contain('Assignment Submissions');
 		});
 
 	});
