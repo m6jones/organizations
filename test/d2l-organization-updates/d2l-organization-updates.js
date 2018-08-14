@@ -142,6 +142,16 @@ describe('d2l-organization-updates', () => {
 			expect(notification.innerHTML).to.contain('Assignment Submissions');
 		});
 
+		it('Combined Display.', done => {
+			component.combined = true;
+			var notification = component.$$('.container');
+			setTimeout(() => {
+				expect(notification.querySelector('.update-text').innerHTML).is.equal('99+');
+				done();
+			});
+
+		});
+
 	});
 
 	describe('Counts and icons correct.', () => {
