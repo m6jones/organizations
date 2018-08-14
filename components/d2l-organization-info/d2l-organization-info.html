@@ -190,7 +190,7 @@
 			},
 
 			_fireVoiceReaderInfo: function(organizationName, showOrganizationCode, showSemesterName, organizationCode, semesterName) {
-				var detials = {
+				var details = {
 					organization: {
 						name: organizationName,
 						code: showOrganizationCode && organizationCode
@@ -198,7 +198,7 @@
 					'semesterName': semesterName
 				};
 
-				this.fire('d2l-organization-accessible', detials);
+				this.fire('d2l-organization-accessible', details);
 			},
 
 			_fetchSirenEntity: function(url) {
