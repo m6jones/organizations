@@ -108,45 +108,55 @@ describe('d2l-organization-updates', () => {
 
 		it('Correct Display.', () => {
 			// UnattemptedQuizzes: -20,
-			var notification = component.$$('.container');
+			var notification = component.$$('#unattemptedQuizzes');
 			expect(notification.getAttribute('disabled')).is.equal.true;
+			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.innerHTML).to.contain('Unattempted Quizzes');
 
 			// UnreadAssignmentFeedback: 0,
-			notification = notification.nextSibling;
+			notification = component.$$('#unreadAssignmentFeedback');
 			expect(notification.getAttribute('disabled')).is.equal.true;
+			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.innerHTML).to.contain('Assignment Feedback');
 
 			// UngradedQuizzes: 4
-			notification = notification.nextSibling;
+			notification = component.$$('#ungradedQuizzes');
 			expect(notification.getAttribute('disabled')).is.equal.false;
-			expect(notification.querySelector('.update-text').innerHTML).is.equal('4');
+			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('4');
+			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.innerHTML).to.contain('Ungraded Quizzes');
 
 			// UnreadDiscussions: 20
 			// UnapprovedDiscussions: 79
-			notification = notification.nextSibling;
+			notification = component.$$('#unreadDiscussions');
 			expect(notification.getAttribute('disabled')).is.equal.false;
-			expect(notification.querySelector('.update-text').innerHTML).is.equal('99');
+			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('99');
+			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.innerHTML).to.contain('Discussions');
 
 			// UnreadAssignmentSubmissions: 200
-			notification = notification.nextSibling;
+			notification = component.$$('#unreadAssignmentSubmissions');
 			expect(notification.getAttribute('disabled')).is.equal.false;
-			expect(notification.querySelector('.update-text').innerHTML).is.equal('99+');
+			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('99+');
+			notification = notification.nextSibling;
+			notification = notification.nextSibling;
 			notification = notification.nextSibling;
 			expect(notification.innerHTML).to.contain('Assignment Submissions');
 		});
 
 		it('Combined Display.', done => {
 			component.combined = true;
-			var notification = component.$$('.container');
 			setTimeout(() => {
-				expect(notification.querySelector('.update-text').innerHTML).is.equal('99+');
+				var notification = component.$$('.update-text-big');
+				expect(notification.innerHTML).is.equal('99+');
 				done();
 			});
 

@@ -39,10 +39,13 @@ Polymer-based web component for a organization updates.
 				--d2l-icon-height: var(--d2l-organization-updates-size, 18px);
 				vertical-align: top;
 			}
-			.update-text-box:nth-child(2) .update-text {
+			.update-text-box {
 				border: 2px solid var(--d2l-color-carnelian);
 				color: var(--d2l-color-carnelian);
 				border-radius: 0.25rem;
+				background-color: white;
+			}
+			.update-text-big {
 				box-sizing: border-box;
 				font-size: 1rem;
 				font-weight: 700;
@@ -50,26 +53,23 @@ Polymer-based web component for a organization updates.
 				height: 2rem;
 				line-height: 2rem;
 				display: inline-flex;
-				margin-top: 0.25rem;
 				align-items: center;
 	  			justify-content: center;
 			}
-			.update-text-box:nth-child(3) {
+			.update-text-box-icon {
 				position: absolute;
 				top: -50%;
 				left: 50%;
-				background-color: white;
-				border: 2px solid var(--d2l-color-carnelian);
-    			border-radius: 0.2rem;
 				padding: 0.0rem 0.035rem 0.075rem 0.065rem;
 			}
-			.update-text-box:nth-child(3) .update-text {
+			.update-text-icon {
 				color: var(--d2l-color-carnelian);
 				line-height: 100%;
 				font-weight: 400;
 				font-size: 0.555rem;
 				margin: 0.05rem 0.07rem 0 0.05rem;
 			}
+			.update-text-big[hidden],
 			.container[disabled] .update-text-box {
 				display: none;
 			}
@@ -83,14 +83,17 @@ Polymer-based web component for a organization updates.
 			}
 		</style>
 		<template is="dom-repeat" items="[[_notificationsToArray(_notifications, combined)]]">
-			<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
-				<template is="dom-if" if="[[item.icon]]">
+			<template is="dom-if" if="[[item.icon]]">
+				<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
 					<d2l-icon icon="[[item.icon]]"></d2l-icon>
-				</template>
-				<span class="update-text-box">
-					<div class="update-text">[[item.updateCount]]</div>
+					<span class="update-text-box-icon update-text-box">
+						<div class="update-text-icon">[[item.updateCount]]</div>
+					</span>
 				</span>
-			</span>
+			</template>
+			<template is="dom-if" if="[[!item.icon]]">
+				<span hidden$="[[item.isDisabled]]" class="update-text-big update-text-box">[[item.updateCount]]</span>
+			</template>
 			<d2l-tooltip for="[[item.key]]" position="top">[[item.toolTip]]</d2l-tooltip>
 		</template>
 	</template>
@@ -211,7 +214,6 @@ Polymer-based web component for a organization updates.
 						icon: options.icon,
 						updateCount: 0
 					};
-					console.log(notifications[options.key]);
 				}
 
 				notifications[options.key].updateCount += numberOfUpdates;
@@ -237,9 +239,9 @@ Polymer-based web component for a organization updates.
 				}
 				return Promise.reject(response.status + ' ' + response.statusText);
 			},
-			_notificationsToArray: function(notification) {
+			_notificationsToArray: function(notification, combined) {
 				var maxCount = 99;
-				if (this.combined) {
+				if (combined) {
 					notification = {
 						combinedValues: Object.keys(notification).reduce(function(accumulator, key) {
 							return {
@@ -250,6 +252,7 @@ Polymer-based web component for a organization updates.
 						}, { updateCount: 0 })
 					};
 				}
+
 				return Object.keys(notification).map(function(key) {
 					var element = {
 						key: key,
