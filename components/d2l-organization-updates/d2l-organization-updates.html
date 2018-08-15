@@ -68,7 +68,7 @@ Polymer-based web component for a organization updates.
 			}
 		</style>
 		<template is="dom-repeat" items="[[_notificationsToArray(_notifications)]]">
-			<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
+			<span class="container" aria-label="[[item.ariaLabel]]" disabled$="[[item.isDisabled]]" id="[[item.key]]">
 				<d2l-icon icon="[[item.icon]]"></d2l-icon>
 				<span class="update-text-box">
 					<div class="update-text">[[item.updateCount]]</div>
@@ -218,10 +218,11 @@ Polymer-based web component for a organization updates.
 			_notificationsToArray: function(notification) {
 				var maxCount = 99;
 				return Object.keys(notification).map(function(key) {
-					notification[key].isDisabled = (notification[key].updateCount <= 0);
-					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
 					notification[key].key = key;
 					notification[key].toolTip = this.localize(key);
+					notification[key].isDisabled = (notification[key].updateCount <= 0);
+					notification[key].ariaLabel = notification[key].updateCount + ' ' + notification[key].toolTip;
+					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
 
 					return notification[key];
 				}.bind(this));
