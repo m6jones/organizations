@@ -102,7 +102,8 @@
 			observers: [
 				'_fetchOrganization(href)',
 				'_fetchPresentation(presentationHref)',
-				'_fetchSemester(_organization, _showSemesterName)'
+				'_fetchSemester(_organization, _showSemesterName)',
+				'_fireVoiceReaderInfo(_organizationName, _showOrganizationCode, _showSemesterName, _organizationCode, _semesterName)'
 			],
 
 			_computeHasStatusText: function(statusTextEnded, statusTextFuture, statusTextInactive) {
@@ -186,6 +187,18 @@
 							&& semesterEntity.properties
 							&& semesterEntity.properties.name;
 					}.bind(this));
+			},
+
+			_fireVoiceReaderInfo: function(organizationName, showOrganizationCode, showSemesterName, organizationCode, semesterName) {
+				var details = {
+					organization: {
+						name: organizationName,
+						code: showOrganizationCode && organizationCode
+					},
+					semesterName: showSemesterName && semesterName
+				};
+
+				this.fire('d2l-organization-accessible', details);
 			},
 
 			_fetchSirenEntity: function(url) {

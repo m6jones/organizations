@@ -84,15 +84,14 @@ Polymer-based web component for a organization updates.
 		</style>
 		<template is="dom-repeat" items="[[_notificationsToArray(_notifications, combined)]]">
 			<template is="dom-if" if="[[item.icon]]">
-				<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
+				<span class="container" aria-label="[[item.ariaLabel]]" disabled$="[[item.isDisabled]]" id="[[item.key]]">
 					<d2l-icon icon="[[item.icon]]"></d2l-icon>
 					<span class="update-text-box-icon update-text-box">
 						<div class="update-text-icon">[[item.updateCount]]</div>
 					</span>
-				</span>
 			</template>
 			<template is="dom-if" if="[[!item.icon]]">
-				<span hidden$="[[item.isDisabled]]" class="update-text-big update-text-box">[[item.updateCount]]</span>
+				<span hidden$="[[item.isDisabled]]" aria-label="[[item.ariaLabel]]" class="update-text-big update-text-box">[[item.updateCount]]</span>
 			</template>
 			<d2l-tooltip for="[[item.key]]" position="top">[[item.toolTip]]</d2l-tooltip>
 		</template>
@@ -246,8 +245,7 @@ Polymer-based web component for a organization updates.
 						combinedValues: Object.keys(notification).reduce(function(accumulator, key) {
 							return {
 								updateCount: notification[key].updateCount + accumulator.updateCount,
-								icon: null,
-								toolTip: null
+								icon: null
 							};
 						}, { updateCount: 0 })
 					};
@@ -259,6 +257,7 @@ Polymer-based web component for a organization updates.
 						isDisabled: (notification[key].updateCount <= 0),
 						updateCount: (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount,
 						toolTip: this.localize(key),
+						ariaLabel = notification[key].updateCount + ' ' + this.localize(key),
 						icon: notification[key].icon
 					};
 
