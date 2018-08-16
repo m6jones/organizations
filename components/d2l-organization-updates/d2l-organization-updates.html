@@ -257,7 +257,7 @@ Polymer-based web component for a organization updates.
 						isDisabled: (notification[key].updateCount <= 0),
 						updateCount: (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount,
 						toolTip: this.localize(key),
-						ariaLabel = notification[key].updateCount + ' ' + this.localize(key),
+						ariaLabel: notification[key].updateCount + ' ' + this.localize(key),
 						icon: notification[key].icon
 					};
 
