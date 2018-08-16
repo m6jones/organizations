@@ -40,21 +40,36 @@ Polymer-based web component for a organization updates.
 				vertical-align: top;
 			}
 			.update-text-box {
+				border: 2px solid var(--d2l-color-carnelian);
+				color: var(--d2l-color-carnelian);
+				border-radius: 0.25rem;
+				background-color: white;
+			}
+			.update-text-big {
+				box-sizing: border-box;
+				font-size: 1rem;
+				font-weight: 700;
+				width: 2rem;
+				height: 2rem;
+				line-height: 2rem;
+				display: inline-flex;
+				align-items: center;
+	  			justify-content: center;
+			}
+			.update-text-box-icon {
 				position: absolute;
 				top: -50%;
 				left: 50%;
-				background-color: white;
-				border: 2px solid var(--d2l-color-carnelian);
-    			border-radius: 0.2rem;
 				padding: 0.0rem 0.035rem 0.075rem 0.065rem;
 			}
-			.update-text {
+			.update-text-icon {
 				color: var(--d2l-color-carnelian);
 				line-height: 100%;
 				font-weight: 400;
 				font-size: 0.555rem;
 				margin: 0.05rem 0.07rem 0 0.05rem;
 			}
+			.update-text-big[hidden],
 			.container[disabled] .update-text-box {
 				display: none;
 			}
@@ -67,13 +82,17 @@ Polymer-based web component for a organization updates.
 				color: #FFFFFF;
 			}
 		</style>
-		<template is="dom-repeat" items="[[_notificationsToArray(_notifications)]]">
-			<span class="container" aria-label="[[item.ariaLabel]]" disabled$="[[item.isDisabled]]" id="[[item.key]]">
-				<d2l-icon icon="[[item.icon]]"></d2l-icon>
-				<span class="update-text-box">
-					<div class="update-text">[[item.updateCount]]</div>
-				</span>
-			</span>
+		<template is="dom-repeat" items="[[_notificationsToArray(_notifications, combined)]]">
+			<template is="dom-if" if="[[item.icon]]">
+				<span class="container" aria-label="[[item.ariaLabel]]" disabled$="[[item.isDisabled]]" id="[[item.key]]">
+					<d2l-icon icon="[[item.icon]]"></d2l-icon>
+					<span class="update-text-box-icon update-text-box">
+						<div class="update-text-icon">[[item.updateCount]]</div>
+					</span>
+			</template>
+			<template is="dom-if" if="[[!item.icon]]">
+				<span hidden$="[[item.isDisabled]]" aria-label="[[item.ariaLabel]]" class="update-text-big update-text-box">[[item.updateCount]]</span>
+			</template>
 			<d2l-tooltip for="[[item.key]]" position="top">[[item.toolTip]]</d2l-tooltip>
 		</template>
 	</template>
@@ -84,6 +103,11 @@ Polymer-based web component for a organization updates.
 			properties: {
 				href: String,
 				presentationHref: String,
+				combined: {
+					type: Boolean,
+					reflectToAttribute: true,
+					value: false
+				},
 
 				_presentation: {
 					type: Object,
@@ -178,7 +202,6 @@ Polymer-based web component for a organization updates.
 
 				var options = this._notificationMap[notification];
 				if (!options.key
-					|| !options.icon
 					|| !options.presentationLink
 					|| !presentation[options.presentationLink]
 				) {
@@ -215,16 +238,30 @@ Polymer-based web component for a organization updates.
 				}
 				return Promise.reject(response.status + ' ' + response.statusText);
 			},
-			_notificationsToArray: function(notification) {
+			_notificationsToArray: function(notification, combined) {
 				var maxCount = 99;
-				return Object.keys(notification).map(function(key) {
-					notification[key].key = key;
-					notification[key].toolTip = this.localize(key);
-					notification[key].isDisabled = (notification[key].updateCount <= 0);
-					notification[key].ariaLabel = notification[key].updateCount + ' ' + notification[key].toolTip;
-					notification[key].updateCount = (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount;
+				if (combined) {
+					notification = {
+						updates: Object.keys(notification).reduce(function(accumulator, key) {
+							return {
+								updateCount: notification[key].updateCount + accumulator.updateCount,
+								icon: null
+							};
+						}, { updateCount: 0 })
+					};
+				}
 
-					return notification[key];
+				return Object.keys(notification).map(function(key) {
+					var element = {
+						key: key,
+						isDisabled: (notification[key].updateCount <= 0),
+						updateCount: (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount,
+						toolTip: this.localize(key),
+						ariaLabel: notification[key].updateCount + ' ' + this.localize(key),
+						icon: notification[key].icon
+					};
+
+					return element;
 				}.bind(this));
 			}
 		});
