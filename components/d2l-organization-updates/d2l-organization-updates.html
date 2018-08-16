@@ -242,7 +242,7 @@ Polymer-based web component for a organization updates.
 				var maxCount = 99;
 				if (combined) {
 					notification = {
-						combinedValues: Object.keys(notification).reduce(function(accumulator, key) {
+						updates: Object.keys(notification).reduce(function(accumulator, key) {
 							return {
 								updateCount: notification[key].updateCount + accumulator.updateCount,
 								icon: null
