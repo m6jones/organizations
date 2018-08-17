@@ -177,7 +177,7 @@ describe('d2l-organization-info', () => {
 			component = fixture('future-organization');
 
 			setTimeout(() => {
-				var text = component.$$('div.small-text.flex span:not([hidden])');
+				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
 				expect(text.innerText).to.contain('Opens on ');
 				done();
 			});
@@ -187,7 +187,7 @@ describe('d2l-organization-info', () => {
 			component = fixture('ended-organization');
 
 			setTimeout(() => {
-				var text = component.$$('div.small-text.flex span:not([hidden])');
+				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
 				expect(text.innerText).to.contain('Closed');
 				done();
 			});
@@ -197,7 +197,7 @@ describe('d2l-organization-info', () => {
 			component = fixture('with-href');
 
 			setTimeout(() => {
-				var text = component.$$('div.small-text.flex span:not([hidden])');
+				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
 				expect(text.innerText).to.contain('(Inactive)');
 				done();
 			});

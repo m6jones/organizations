@@ -19,6 +19,7 @@
     "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.13.0",
     "d2l-icons": "BrightspaceUI/icons#^5.0.1",
     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#^1.1.2",
+    "d2l-tile": "BrightspaceUI/d2l-tile#^4.1.3",
     "d2l-tooltip": "BrightspaceUI/tooltip#^2.0.4",
     "polymer": "1 - 2",
     "siren-parser-import": "Brightspace/siren-parser-import#^7.0.0"
