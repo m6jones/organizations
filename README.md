@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/BrightspaceHypermediaComponents/organizations.svg?branch=hybrid)](https://travis-ci.org/BrightspaceHypermediaComponents/organizations)
+[![Build Status](https://travis-ci.com/BrightspaceHypermediaComponents/organizations.svg?branch=hybrid)](https://travis-ci.com/BrightspaceHypermediaComponents/organizations)
 
 # d2l-organizations
 
