@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BrightspaceHypermediaComponents/organizations.svg?branch=hybrid)](https://travis-ci.org/BrightspaceHypermediaComponents/organizations)
+
 # d2l-organizations
 
 This is the `hybrid` branch of the `d2l-organizations` components. These are Polymer 1/2 hybrid components, which will eventually be updated to Polymer 2+. If you're looking for Polymer 2 components, they're on the `master` branch.
