@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/BrightspaceHypermediaComponents/organizations.svg?branch=master)](https://travis-ci.com/BrightspaceHypermediaComponents/organizations)
+
 # d2l-organizations
 
 [Polymer](https://www.polymer-project.org)-based web component for D2L organizations.
