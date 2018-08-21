@@ -30,32 +30,6 @@ describe('d2l-organization-info', () => {
 				ShowSemester: true
 			}
 		});
-		var futureOrganization = window.D2L.Hypermedia.Siren.Parse({
-			properties: {
-				name: 'Course Name',
-				code: 'SCI100',
-				startDate: '2099-01-01T00:00:00.000Z',
-				endDate: '2100-01-01T00:00:00.000Z',
-				isActive: true
-			},
-			links: [{
-				rel: ['https://api.brightspace.com/rels/parent-semester'],
-				href: '/semester.json'
-			}]
-		});
-		var endedOrganization = window.D2L.Hypermedia.Siren.Parse({
-			properties: {
-				name: 'Course Name',
-				code: 'SCI100',
-				startDate: '1999-01-01T00:00:00.000Z',
-				endDate: '2000-01-01T00:00:00.000Z',
-				isActive: true
-			},
-			links: [{
-				rel: ['https://api.brightspace.com/rels/parent-semester'],
-				href: '/semester.json'
-			}]
-		});
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		fetchStub
@@ -63,16 +37,6 @@ describe('d2l-organization-info', () => {
 			.returns(Promise.resolve({
 				ok: true,
 				json: () => { return Promise.resolve(organizationEntity); }
-			}))
-			.withArgs(sinon.match.has('url', sinon.match('/future-organization.json')))
-			.returns(Promise.resolve({
-				ok: true,
-				json: () => { return Promise.resolve(futureOrganization); }
-			}))
-			.withArgs(sinon.match.has('url', sinon.match('/ended-organization.json')))
-			.returns(Promise.resolve({
-				ok: true,
-				json: () => { return Promise.resolve(endedOrganization); }
 			}))
 			.withArgs(sinon.match.has('url', sinon.match('/semester.json')))
 			.returns(Promise.resolve({
@@ -91,8 +55,15 @@ describe('d2l-organization-info', () => {
 	});
 
 	describe('observers', () => {
-		beforeEach(() => {
+		beforeEach(done => {
 			component = fixture('no-params');
+			setTimeout(() => {
+				done();
+			}, 100);
+		});
+
+		afterEach(() => {
+			sandbox.restore();
 		});
 
 		it('should call _fetchOrganization upon changes to href', () => {
@@ -116,6 +87,17 @@ describe('d2l-organization-info', () => {
 			component._showSemesterName = true;
 			expect(spy.callCount).to.equal(2);
 		});
+
+		it('should call _sendVoiceReaderInfo upon changes to _showOrganizationCode, _showSemesterName, _organizationCode or _semesterName', () => {
+			var spy = sandbox.spy(component, '_sendVoiceReaderInfo');
+
+			component._semesterName = 'Semester Name';
+			component._showSemesterName = true;
+			component._organizationCode = 'PMATH350';
+			component._showOrganizationCode = true;
+			expect(spy).to.have.been.called;
+
+		});
 	});
 
 	describe('fetching organization', () => {
@@ -129,10 +111,6 @@ describe('d2l-organization-info', () => {
 
 		it('should set the _organization', () => {
 			expect(component._organization).to.be.an('object');
-		});
-
-		it('should set the _organizationName', () => {
-			expect(component._organizationName).to.equal('Course Name');
 		});
 
 		it('should set the _organizationCode', () => {
@@ -172,35 +150,32 @@ describe('d2l-organization-info', () => {
 		});
 	});
 
-	describe('status text', () => {
-		it('should display the "Opens on" text when organization starts in future', done => {
-			component = fixture('future-organization');
-
+	describe('Events', () => {
+		beforeEach(done => {
+			component = fixture('with-href-and-presentation-href');
 			setTimeout(() => {
-				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
-				expect(text.innerText).to.contain('Opens on ');
 				done();
-			});
+			}, 100);
 		});
 
-		it('should display the "Closed" text when organization ends in past', done => {
-			component = fixture('ended-organization');
-
-			setTimeout(() => {
-				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
-				expect(text.innerText).to.contain('Closed');
+		it('d2l-organization-accessible should have semesterName.', done => {
+			component.addEventListener('d2l-organization-accessible', function(e) {
+				expect(e.detail.semesterName).to.equal('New Name');
 				done();
 			});
+			component._semesterName = 'New Name';
+
 		});
 
-		it('should display the "Inactive" text when organization is inactive', done => {
-			component = fixture('with-href');
-
-			setTimeout(() => {
-				var text = component.$$('d2l-card-content-meta.flex span:not([hidden])');
-				expect(text.innerText).to.contain('(Inactive)');
+		it('d2l-organization-accessible should have course code.', done => {
+			component.addEventListener('d2l-organization-accessible', function(e) {
+				expect(e.detail.organization.code).to.equal('PMATH350');
 				done();
 			});
+			component._organizationCode = 'PMATH350';
+
 		});
+
 	});
+
 });

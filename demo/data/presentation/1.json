@@ -1,12 +1,7 @@
 {
   "properties": {
     "ShowCourseCode": true,
-    "ShowSemester": true,
-    "ShowUnattemptedQuizzes": true,
-    "ShowDropboxUnreadFeedback": true,
-    "ShowUngradedQuizAttempts": true,
-    "ShowUnreadDiscussionMessages": true,
-    "ShowUnreadDropboxSubmissions": true
+    "ShowSemester": true
   },
   "links": [{
     "rel": ["self"],

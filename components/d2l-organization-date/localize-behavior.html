@@ -1,0 +1,111 @@
+<link rel="import" href="../../../d2l-localize-behavior/d2l-localize-behavior.html">
+
+<script>
+	window.D2L = window.D2L || {};
+	window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+	window.D2L.PolymerBehaviors.OrganizationDate = window.D2L.PolymerBehaviors.OrganizationDate || {};
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.OrganizationDate.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.OrganizationDate.LocalizeBehaviorImpl = {
+		properties: {
+			locale: {
+				type: String,
+				value: function() {
+					return document.documentElement.lang
+						|| document.documentElement.getAttribute('data-lang-default')
+						|| 'en-us';
+				}
+			},
+			resources: {
+				value: function() {
+					return {
+						'en': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Closed {dateTime}',
+							'courseOpensOn': 'Opens on {dateTime}',
+						},
+						'ar': {
+							'brackets': '({content})',
+							'courseClosedOn': 'تم الإغلاق في {dateTime}',
+							'courseOpensOn': 'يفتح في {dateTime}',
+						},
+						'de': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Geschlossen am {dateTime} um',
+							'courseOpensOn': 'Öffnet am {dateTime} um',
+						},
+						'es': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Cerrado el {dateTime}',
+							'courseOpensOn': 'Se abre el día {dateTime}',
+						},
+						'fi': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Suljettu {dateTime}',
+							'courseOpensOn': 'Avautuu {dateTime}',
+						},
+						'fr': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Fermé le {dateTime} à',
+							'courseOpensOn': 'Ouvert le {dateTime} à',
+						},
+						'ja': {
+							'brackets': '（{content}）',
+							'courseClosedOn': '{dateTime} にクローズ',
+							'courseOpensOn': '{dateTime} にオープン',
+						},
+						'ko': {
+							'brackets': '({content})',
+							'courseClosedOn': '닫힘 일시: {dateTime}',
+							'courseOpensOn': '열림 일시 {dateTime}',
+						},
+						'nb': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Closed {dateTime}',
+							'courseOpensOn': 'Opens on {dateTime}',
+						},
+						'nl': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Gesloten {dateTime}',
+							'courseOpensOn': 'Opent op {dateTime}',
+						},
+						'pt': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Fechado em {dateTime}',
+							'courseOpensOn': 'Abre em {dateTime}',
+						},
+						'sv': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Stängdes {dateTime}',
+							'courseOpensOn': 'Öppnas {dateTime}',
+						},
+						'tr': {
+							'brackets': '({content})',
+							'courseClosedOn': 'Şu tarihte kapandı: {dateTime}',
+							'courseOpensOn': 'Şu tarihte açılacak: {dateTime}',
+						},
+						'zh': {
+							'brackets': '({content})',
+							'courseClosedOn': '已于 {dateTime} 关闭',
+							'courseOpensOn': '于 {dateTime} 开启',
+						},
+						'zh-tw': {
+							'brackets': '({content})',
+							'courseClosedOn': '關閉於 {dateTime}',
+							'courseOpensOn': '開啟於 {dateTime}',
+						}
+					};
+				}
+			}
+		}
+	};
+
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.OrganizationDate.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.OrganizationDate.LocalizeBehavior = [
+		D2L.PolymerBehaviors.LocalizeBehavior,
+		D2L.PolymerBehaviors.OrganizationDate.LocalizeBehaviorImpl
+	];
+</script>

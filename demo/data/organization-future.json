@@ -11,6 +11,6 @@
     "href": "data/organization.json"
   }, {
     "rel": ["https://api.brightspace.com/rels/parent-semester"],
-    "href": "data/semester.json"
+    "href": "../data/semester.json"
   }]
 }

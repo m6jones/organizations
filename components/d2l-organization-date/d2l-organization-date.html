@@ -1,0 +1,89 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../d2l-organization-behavior.html">
+<link rel="import" href="localize-behavior.html">
+
+<!--
+`d2l-organization-date`
+
+Polymer-based web component for a organization date such as start and end date for a course.
+
+@demo demo/d2l-organization-date/d2l-organization-date-demo.html Organization Name
+-->
+
+<dom-module id="d2l-organization-date">
+	<template strip-whitespace>
+		<span hidden$="[[!_statusText]]">[[_statusText]]</span>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'd2l-organization-date',
+
+			properties: {
+				href: String,
+
+				_statusText: String
+			},
+
+			behaviors: [
+				D2L.PolymerBehaviors.OrganizationDate.LocalizeBehavior,
+				D2L.Organization.Behavior
+			],
+
+			observers: [
+				'_fetchOrganizationDate(href)',
+				'_sendVoiceReaderInfo(_statusText)'
+			],
+
+			_fetchOrganizationDate: function(organizationHref) {
+				return this._fetchSirenEntity(organizationHref)
+					.then(function(organizationEntity) {
+						this._statusText = null;
+
+						if (!organizationEntity) {
+							return;
+						}
+
+						if (!organizationEntity.properties) {
+							return;
+						}
+
+						var nowDate = Date.now();
+						var endDate = Date.parse(organizationEntity.properties.endDate);
+						var startDate = Date.parse(organizationEntity.properties.startDate);
+
+						if (endDate < nowDate) {
+							endDate = new Date(endDate);
+							this._statusText = this.localize('courseClosedOn', 'dateTime', this.formatDate(endDate, {format: 'MMMM d, yyyy'}) + ' ' + this.formatTime(endDate));
+						} else if (startDate > nowDate) {
+							startDate = new Date(startDate);
+							this._statusText = this.localize('courseOpensOn', 'dateTime', this.formatDate(startDate, {format: 'MMMM d, yyyy'}) + ' ' + this.formatTime(startDate));
+						}
+						if (this._statusText || !organizationEntity.properties.isActive) {
+							this.fire('d2l-organization-date', {
+								inactive: !organizationEntity.properties.isActive || startDate > nowDate,
+								isClosed:  endDate <= nowDate,
+								beforeStartDate: startDate > nowDate,
+								afterEndDate: endDate <= nowDate
+							});
+						}
+
+					}.bind(this));
+			},
+
+			_sendVoiceReaderInfo: function(statusText) {
+				if (!statusText) {
+					return;
+				}
+
+				var details = {
+					organization: {
+						date: statusText
+					},
+				};
+
+				this._fireD2lOrganizationAccessible(details);
+			},
+		});
+	</script>
+</dom-module>
