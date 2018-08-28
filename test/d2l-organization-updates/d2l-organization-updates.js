@@ -16,7 +16,7 @@ describe('d2l-organization-updates', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 
-		notificationEntity = window.D2L.Hypermedia.Siren.Parse({
+		notificationEntity = {
 			properties: {
 				UnattemptedQuizzes: -20,
 				UnreadAssignmentFeedback: 0,
@@ -29,8 +29,8 @@ describe('d2l-organization-updates', () => {
 				rel: ['self'],
 				href: '/data/notification.json'
 			}]
-		});
-		presentationEntity = window.D2L.Hypermedia.Siren.Parse({
+		};
+		presentationEntity = {
 			properties: {
 				ShowCourseCode: true,
 				ShowSemester: true,
@@ -40,7 +40,7 @@ describe('d2l-organization-updates', () => {
 				ShowUnreadDiscussionMessages: true,
 				ShowUnreadDropboxSubmissions: true
 			}
-		});
+		};
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		SetupFetchStub('/notification.json', notificationEntity);

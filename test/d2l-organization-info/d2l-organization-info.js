@@ -6,7 +6,7 @@ describe('d2l-organization-info', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 
-		var organizationEntity = window.D2L.Hypermedia.Siren.Parse({
+		var organizationEntity = {
 			properties: {
 				name: 'Course Name',
 				code: 'SCI100',
@@ -18,18 +18,18 @@ describe('d2l-organization-info', () => {
 				rel: ['https://api.brightspace.com/rels/parent-semester'],
 				href: '/semester.json'
 			}]
-		});
-		var semesterEntity = window.D2L.Hypermedia.Siren.Parse({
+		};
+		var semesterEntity = {
 			properties: {
 				name: 'Semester Name'
 			}
-		});
-		var presentationEntity = window.D2L.Hypermedia.Siren.Parse({
+		};
+		var presentationEntity = {
 			properties: {
 				ShowCourseCode: true,
 				ShowSemester: true
 			}
-		});
+		};
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		fetchStub

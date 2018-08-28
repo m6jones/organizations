@@ -1,4 +1,4 @@
-describe('d2l-organization-info', () => {
+describe('d2l-organization-date', () => {
 	var sandbox,
 		component,
 		fetchStub;
@@ -6,7 +6,7 @@ describe('d2l-organization-info', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 
-		var organizationEntity = window.D2L.Hypermedia.Siren.Parse({
+		var organizationEntity = {
 			properties: {
 				name: 'Course Name',
 				code: 'SCI100',
@@ -18,8 +18,8 @@ describe('d2l-organization-info', () => {
 				rel: ['https://api.brightspace.com/rels/parent-semester'],
 				href: '/semester.json'
 			}]
-		});
-		var futureOrganization = window.D2L.Hypermedia.Siren.Parse({
+		};
+		var futureOrganization = {
 			properties: {
 				name: 'Course Name',
 				code: 'SCI100',
@@ -31,8 +31,8 @@ describe('d2l-organization-info', () => {
 				rel: ['https://api.brightspace.com/rels/parent-semester'],
 				href: '/semester.json'
 			}]
-		});
-		var endedOrganization = window.D2L.Hypermedia.Siren.Parse({
+		};
+		var endedOrganization = {
 			properties: {
 				name: 'Course Name',
 				code: 'SCI100',
@@ -44,7 +44,7 @@ describe('d2l-organization-info', () => {
 				rel: ['https://api.brightspace.com/rels/parent-semester'],
 				href: '/semester.json'
 			}]
-		});
+		};
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		fetchStub
