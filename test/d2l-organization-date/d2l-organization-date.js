@@ -99,7 +99,7 @@ describe('d2l-organization-info', () => {
 		});
 
 		it('should set the _statusText', () => {
-			expect(component._statusText).to.equal('Opens on December 31, 2098 7:00 PM');
+			expect(component._statusText).to.contain('Opens on ');
 		});
 	});
 
