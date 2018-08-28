@@ -5,32 +5,23 @@
 		<script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 		<script src="../../../web-component-tester/browser.js"></script>
 
-		<link rel="import" href="../../components/d2l-organization-info/d2l-organization-info.html">
+		<link rel="import" href="../../components/d2l-organization-name/d2l-organization-name.html">
 	</head>
 	<body>
 		<test-fixture id="no-params">
 			<template>
-				<d2l-organization-info></d2l-organization-info>
+				<d2l-organization-name></d2l-organization-name>
 			</template>
 		</test-fixture>
 
 		<test-fixture id="with-href">
 			<template>
-				<d2l-organization-info
+				<d2l-organization-name
 					href="/organization.json">
-				</d2l-organization-info>
+				</d2l-organization-name>
 			</template>
 		</test-fixture>
 
-		<test-fixture id="with-href-and-presentation-href">
-			<template>
-				<d2l-organization-info
-					href="/organization.json"
-					presentation-href="/presentation.json">
-				</d2l-organization-info>
-			</template>
-		</test-fixture>
-
-		<script src="d2l-organization-info.js"></script>
+		<script src="d2l-organization-name.js"></script>
 	</body>
 </html>

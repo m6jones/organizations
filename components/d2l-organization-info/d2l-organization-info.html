@@ -1,11 +1,18 @@
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
 <link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
 <link rel="import" href="../../../d2l-icons/d2l-icon.html">
 <link rel="import" href="../../../d2l-icons/tier1-icons.html">
-<link rel="import" href="../../../d2l-tile/d2l-card-content-meta.html">
 <link rel="import" href="../../../siren-parser-import/siren-parser.html">
+<link rel="import" href="../d2l-organization-behavior.html">
 <link rel="import" href="localize-behavior.html">
+
+<!--
+`d2l-organization-info`
+
+Polymer-based web component for a organization info such as course code and semester name.
+
+@demo demo/d2l-organization-info/d2l-organization-info-demo.html Organization Name
+-->
 
 <dom-module id="d2l-organization-info">
 	<template strip-whitespace>
@@ -23,29 +30,13 @@
 				text-transform: uppercase;
 			}
 
-			.flex:not([hidden]) {
-				display: flex;
-				flex-direction: column;
-				margin-top: 0.6rem;
-			}
-
-			d2l-card-content-meta {
-				display: block;
-			}
-
 		</style>
 
-		[[_organizationName]]
-		<d2l-card-content-meta>
+		<span>
 			<span hidden$="[[!_showOrganizationCode]]" class="uppercase">[[_organizationCode]]</span>
 			<d2l-icon hidden$="[[!_showSeparator]]" icon="d2l-tier1:bullet"></d2l-icon>
 			<span hidden$="[[!_showSemesterName]]">[[_semesterName]]</span>
-		</d2l-card-content-meta>
-		<d2l-card-content-meta class="flex" hidden$="[[!_hasStatusText]]">
-			<span hidden$="[[!_statusTextEnded]]">[[_statusTextEnded]]</span>
-			<span hidden$="[[!_statusTextFuture]]">[[_statusTextFuture]]</span>
-			<span hidden$="[[!_statusTextInactive]]">[[_statusTextInactive]]</span>
-		</d2l-card-content-meta>
+		</span>
 	</template>
 
 	<script>
@@ -56,14 +47,8 @@
 				href: String,
 				presentationHref: String,
 
-				_hasStatusText: {
-					type: Boolean,
-					value: false,
-					computed: '_computeHasStatusText(_statusTextEnded, _statusTextFuture, _statusTextInactive)'
-				},
 				_organization: Object,
 				_organizationCode: String,
-				_organizationName: String,
 				_semesterName: String,
 				_showOrganizationCode: {
 					type: Boolean,
@@ -77,28 +62,21 @@
 					type: Boolean,
 					value: false,
 					computed: '_computeShowSeparator(_showOrganizationCode, _showSemesterName, _organizationCode, _semesterName)'
-				},
-				_statusTextEnded: String,
-				_statusTextFuture: String,
-				_statusTextInactive: String
+				}
 			},
 
 			behaviors: [
 				window.D2L.Hypermedia.HMConstantsBehavior,
-				D2L.PolymerBehaviors.OrganizationInfo.LocalizeBehavior
+				D2L.PolymerBehaviors.OrganizationInfo.LocalizeBehavior,
+				D2L.PolymerBehaviors.Organization.Behavior
 			],
 
 			observers: [
 				'_fetchOrganization(href)',
 				'_fetchPresentation(presentationHref)',
 				'_fetchSemester(_organization, _showSemesterName)',
-				'_fireVoiceReaderInfo(_organizationName, _showOrganizationCode, _showSemesterName, _organizationCode, _semesterName)'
+				'_sendVoiceReaderInfo(_showOrganizationCode, _showSemesterName, _organizationCode, _semesterName)'
 			],
-
-			_computeHasStatusText: function(statusTextEnded, statusTextFuture, statusTextInactive) {
-				return statusTextEnded || statusTextFuture || statusTextInactive;
-			},
-
 			_computeShowSeparator: function(showOrganizationCode, showSemester, organizationCode, semesterName) {
 				return showSemester
 					&& showOrganizationCode
@@ -124,24 +102,7 @@
 							return;
 						}
 
-						this._organizationName = organizationEntity.properties.name;
 						this._organizationCode = organizationEntity.properties.code;
-
-						if (!organizationEntity.properties.isActive) {
-							this._statusTextInactive = this.localize('brackets', 'content', this.localize('inactive'));
-						}
-
-						var nowDate = Date.now();
-						var endDate = Date.parse(organizationEntity.properties.endDate);
-						var startDate = Date.parse(organizationEntity.properties.startDate);
-
-						if (endDate < nowDate) {
-							endDate = new Date(endDate);
-							this._statusTextEnded = this.localize('courseClosedOn', 'dateTime', this.formatDate(endDate, {format: 'MMMM d, yyyy'}) + ' ' + this.formatTime(endDate));
-						} else if (startDate > nowDate) {
-							startDate = new Date(startDate);
-							this._statusTextFuture = this.localize('courseOpensOn', 'dateTime', this.formatDate(startDate, {format: 'MMMM d, yyyy'}) + ' ' + this.formatTime(startDate));
-						}
 					}.bind(this));
 			},
 
@@ -178,35 +139,16 @@
 					}.bind(this));
 			},
 
-			_fireVoiceReaderInfo: function(organizationName, showOrganizationCode, showSemesterName, organizationCode, semesterName) {
+			_sendVoiceReaderInfo: function(showOrganizationCode, showSemesterName, organizationCode, semesterName) {
 				var details = {
 					organization: {
-						name: organizationName,
 						code: showOrganizationCode && organizationCode
 					},
 					semesterName: showSemesterName && semesterName
 				};
 
-				this.fire('d2l-organization-accessible', details);
+				this._fireD2lOrganizationAccessible(details);
 			},
-
-			_fetchSirenEntity: function(url) {
-				if (!url) {
-					return;
-				}
-
-				return window.d2lfetch
-					.fetch(new Request(url, {
-						headers: { Accept: 'application/vnd.siren+json' },
-					}))
-					.then(function(response) {
-						if (response.ok) {
-							return response.json();
-						}
-						return Promise.reject(response.status + ' ' + response.statusText);
-					})
-					.then(window.D2L.Hypermedia.Siren.Parse);
-			}
 		});
 	</script>
 </dom-module>

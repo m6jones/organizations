@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+		<title>d2l-organization demo</title>
+		<script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+		<link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+		<link rel="import" href="../../../d2l-typography/d2l-typography.html">
+		<link rel="import" href="../../components/d2l-organization-info/d2l-organization-info.html">
+		<custom-style>
+			<style is="custom-style" include="demo-pages-shared-styles"></style>
+		</custom-style>
+		<custom-style include="d2l-typography">
+			<style is="custom-style" include="d2l-typography"></style>
+		</custom-style>
+	</head>
+	<body class="d2l-typography">
+		<div class="vertical-section-container centered">
+
+			<h3>d2l-organization-info</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-info
+						presentation-href="../data/presentation/1.json"
+						href="../data/organization-current.json">
+					</d2l-organization-info>
+				</template>
+			</demo-snippet>
+
+			<demo-snippet>
+				<template>
+					<d2l-organization-info
+						presentation-href="../data/presentation/2.json"
+						href="../data/organization-current.json">
+					</d2l-organization-info>
+				</template>
+			</demo-snippet>
+
+			<demo-snippet>
+				<template>
+					<d2l-organization-info
+						presentation-href="../data/presentation/3.json"
+						href="../data/organization-current.json">
+					</d2l-organization-info>
+				</template>
+			</demo-snippet>
+
+		</div>
+	</body>
+
+	<!-- The class="d2l-typography" on the body doesn't always work -->
+	<script>document.querySelector('body').classList.add('d2l-typography');</script>
+</html>
