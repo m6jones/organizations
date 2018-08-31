@@ -99,28 +99,28 @@ describe('d2l-organization-date', () => {
 		});
 
 		it('should set the _statusText', () => {
-			expect(component._statusText).to.contain('Opens on ');
+			expect(component._statusText).to.contain('Starts ');
 		});
 	});
 
 	describe('status text', () => {
-		it('should display the "Opens on" text when organization starts in future', done => {
+		it('should display the "Starts" text when organization starts in future', done => {
 			component = fixture('future-organization');
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
-				expect(text.innerText).to.contain('Opens on ');
+				expect(text.innerText).to.contain('Starts ');
 				done();
 			});
 
 		});
 
-		it('should display the "Closed" text when organization ends in past', done => {
+		it('should display the "Ends" text when organization ends in past', done => {
 			component = fixture('ended-organization');
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
-				expect(text.innerText).to.contain('Closed');
+				expect(text.innerText).to.contain('Ends');
 				done();
 			});
 
@@ -147,8 +147,7 @@ describe('d2l-organization-date', () => {
 		it('should send event with detail of inactive and before start date as true when organization starts in future.', done => {
 			component.addEventListener('d2l-organization-date', function(e) {
 				expect(e.detail.beforeStartDate).to.be.true;
-				expect(e.detail.inactive).to.be.true;
-				expect(e.detail.isClosed).to.be.false;
+				expect(e.detail.active).to.be.true;
 				expect(e.detail.afterEndDate).to.be.false;
 				done();
 			});
@@ -159,8 +158,7 @@ describe('d2l-organization-date', () => {
 		it('should send event with detail of is closed and after end date to be true when organization ends in past.', done => {
 			component.addEventListener('d2l-organization-date', function(e) {
 				expect(e.detail.beforeStartDate).to.be.false;
-				expect(e.detail.inactive).to.be.false;
-				expect(e.detail.isClosed).to.be.true;
+				expect(e.detail.active).to.be.true;
 				expect(e.detail.afterEndDate).to.be.true;
 				done();
 			});
@@ -168,30 +166,29 @@ describe('d2l-organization-date', () => {
 
 		});
 
-		it('should have inactive true and the rest false when organization is inactive without start date.', done => {
+		it('should have active false and the rest null when organization is inactive without start date.', done => {
 			component.addEventListener('d2l-organization-date', function(e) {
-				expect(e.detail.beforeStartDate).to.be.false;
-				expect(e.detail.inactive).to.be.true;
-				expect(e.detail.isClosed).to.be.false;
-				expect(e.detail.afterEndDate).to.be.false;
+				expect(e.detail.beforeStartDate).to.be.null;
+				expect(e.detail.active).to.be.false;
+				expect(e.detail.afterEndDate).to.be.null;
 				done();
 			});
 			component.href = '/organization.json';
 
 		});
 
-		it('should send the "Opens on" text when organization starts in future', done => {
+		it('should send the "Starts" text when organization starts in future', done => {
 			component.addEventListener('d2l-organization-accessible', function(e) {
-				expect(e.detail.organization.date).to.contain('Opens on ');
+				expect(e.detail.organization.date).to.contain('Starts ');
 				done();
 			});
 			component.href = '/future-organization.json';
 
 		});
 
-		it('should send the "Closed" text when organization ends in past', done => {
+		it('should send the "Ends" text when organization ends in past', done => {
 			component.addEventListener('d2l-organization-accessible', function(e) {
-				expect(e.detail.organization.date).to.contain('Closed');
+				expect(e.detail.organization.date).to.contain('Ends ');
 				done();
 			});
 			component.href = '/ended-organization.json';
