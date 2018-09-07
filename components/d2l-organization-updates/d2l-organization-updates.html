@@ -1,13 +1,8 @@
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
 <link rel="import" href="../../../d2l-icons/d2l-icon.html">
-<link rel="import" href="../../../d2l-icons/tier2-icons.html">
-<link rel="import" href="../../../d2l-icons/tier1-icons.html">
 <link rel="import" href="../../../d2l-tooltip/d2l-tooltip.html">
 <link rel="import" href="../../../d2l-offscreen/d2l-offscreen.html">
-<link rel="import" href="../../../siren-parser-import/siren-parser.html">
-<link rel="import" href="../d2l-organization-icons.html">
-<link rel="import" href="localize-behavior.html">
+<link rel="import" href="d2l-organization-updates-behavior.html">
 
 <!--
 `d2l-organization-updates`
@@ -25,15 +20,24 @@ Polymer-based web component for a organization updates.
 				position: relative;
 				margin: auto;
 				flex-direction: row;
-				justify-content: space-evenly;
 				flex-wrap: wrap;
 				padding-top: 0;
 			}
-			.container {
+			.organization-updates-container {
 				position: relative;
 				width: var(--d2l-organization-updates-size, 18px);
 				height: var(--d2l-organization-updates-size, 18px);
-				max-width: 20%;
+			}
+			.organization-updates-container ~ * {
+				margin: 0 0 0 1.95rem;
+			}
+			/* P2-shadow */
+			:host-context([dir="rtl"]) .organization-updates-container ~ * {
+				margin: 0 1.95rem 0 0;
+			}
+			/* P1-shady, P2-shady */
+			:host(:dir(rtl)) .organization-updates-container ~ * {
+				margin: 0 1.95rem 0 0;
 			}
 			d2l-icon {
 				--d2l-icon-width: var(--d2l-organization-updates-size, 18px);
@@ -65,7 +69,7 @@ Polymer-based web component for a organization updates.
 				padding: 0 0.175rem 0.05rem 0.175rem;
 			}
 			.update-text-icon {
-				color: var(--d2l-color-carnelian);
+				color: var(--d2l-color-ferrite);
 				line-height: 100%;
 				font-weight: 400;
 				font-size: 0.555rem;
@@ -96,9 +100,9 @@ Polymer-based web component for a organization updates.
 				padding: 0px;
 			}
 		</style>
-		<template is="dom-repeat" items="[[_notificationsToArray(_notifications, combined)]]">
+		<template is="dom-repeat" items="[[_notifications]]">
 			<template is="dom-if" if="[[item.icon]]">
-				<span class="container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
+				<span class="organization-updates-container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
 					<d2l-icon icon="[[item.icon]]"></d2l-icon>
 					<span class="update-text-box-icon update-text-box">
 						<div class="update-text-icon" aria-hidden="true">[[item.updateCount]]</div>
@@ -129,188 +133,38 @@ Polymer-based web component for a organization updates.
 				combined: {
 					type: Boolean,
 					reflectToAttribute: true,
-					value: false
+					value: false,
+					observer: '_handleCombinedChange'
 				},
 
-				_presentation: {
-					type: Object,
-					value: function() { return {}; }
-				},
 				_notifications: {
-					type: Object,
-					value: function() { return {}; }
-				},
-				_notificationMap: {
-					type: Object,
-					readOnly: true,
-					value: function() {
-						return {
-							UnreadAssignmentFeedback: {
-								key: 'unreadAssignmentFeedback',
-								presentationLink: 'ShowDropboxUnreadFeedback',
-								toolTip: 'unreadAssignmentFeedback',
-								icon: 'd2l-tier1:assignments',
-								order: 1
-							},
-							UnreadAssignmentSubmissions: {
-								key: 'unreadAssignmentFeedback',
-								presentationLink: 'ShowUnreadDropboxSubmissions',
-								toolTip: 'unreadAssignmentSubmissions',
-								icon: 'd2l-tier1:assignments',
-								order: 1
-							},
-							UnattemptedQuizzes: {
-								key: 'unreadQuizzesFeedback',
-								presentationLink: 'ShowUnattemptedQuizzes',
-								toolTip: 'unattemptedQuizzes',
-								icon: 'd2l-organization-icons:quiz-submissions',
-								order: 3
-							},
-							UngradedQuizzes: {
-								key: 'unreadQuizzesFeedback',
-								presentationLink: 'ShowUngradedQuizAttempts',
-								toolTip: 'ungradedQuizzes',
-								icon: 'd2l-organization-icons:quiz-submissions',
-								order: 3
-							},
-							UnreadDiscussions: {
-								key: 'unreadDiscussionFeedback',
-								presentationLink: 'ShowUnreadDiscussionMessages',
-								toolTip: 'unreadDiscussions',
-								icon: 'd2l-tier1:comment-hollow',
-								order: 2
-							},
-							UnapprovedDiscussions: {
-								key: 'unreadDiscussionFeedback',
-								presentationLink: 'ShowUnreadDiscussionMessages',
-								toolTip: 'unapprovedDiscussions',
-								icon: 'd2l-tier1:comment-hollow',
-								order: 2
-							}
-						};
-					}
+					type: Array,
+					value: function() { return []; }
 				}
 			},
 
 			behaviors: [
-				D2L.PolymerBehaviors.OrganizationUpdates.LocalizeBehavior
+				D2L.PolymerBehaviors.Organization.Updates.Behavior
 			],
 
 			observers: [
-				'_fetchNotifications(href, _presentation)',
-				'_fetchPresentation(presentationHref)'
+				'_fetchNotifications(href, presentationHref)'
 			],
 
-			_fetchPresentation: function(presentationUrl) {
-				if (!presentationUrl) {
+			_fetchNotifications: function(notificationsUrl, presentationUrl, combined) {
+				if (!combined) {
+					combined = this.combined;
+				}
+				if (!notificationsUrl || !presentationUrl) {
 					return Promise.resolve();
 				}
-
-				return this._fetchSirenEntity(presentationUrl)
-					.then(function(presentation) {
-						this._presentation = presentation.properties || {};
+				return this._orgUpdates_fetch(notificationsUrl, presentationUrl)
+					.then(function(notification) {
+						this._notifications = this._orgUpdates_notifications(notification, combined);
 					}.bind(this));
 			},
-			_fetchNotifications: function(notificationsUrl, presentation) {
-				if (!notificationsUrl || !presentation) {
-					return Promise.resolve();
-				}
-
-				return this._fetchSirenEntity(notificationsUrl)
-					.then(function(notificationsInfo) {
-						if (!(notificationsInfo = notificationsInfo.properties)) {
-							return;
-						}
-						var notifications = {};
-						for (var key in notificationsInfo) {
-							if (notificationsInfo.hasOwnProperty(key)) {
-								this._prepareNotification(notifications, presentation, key, notificationsInfo[key]);
-							}
-						}
-						this._notifications = notifications;
-					}.bind(this));
-			},
-			_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
-				if (!this._notificationMap.hasOwnProperty(notification)) {
-					return;
-				}
-
-				var options = this._notificationMap[notification];
-				if (!options.key
-					|| !options.presentationLink
-					|| !presentation[options.presentationLink]
-				) {
-					return;
-				}
-
-				if (!notifications.hasOwnProperty(options.key)) {
-					notifications[options.key] = {
-						icon: options.icon,
-						updateCount: 0,
-						order: options.order,
-						toolTip: []
-					};
-				}
-
-				notifications[options.key].updateCount += numberOfUpdates;
-				if (numberOfUpdates) {
-					notifications[options.key].toolTip.push([options.toolTip, numberOfUpdates]);
-				}
-			},
-			_fetchSirenEntity: function(url) {
-				if (!url) {
-					return;
-				}
-
-				return window.d2lfetch
-					.fetch(new Request(url, {
-						headers: { Accept: 'application/vnd.siren+json' },
-					}))
-					.then(this._responseToSirenEntity.bind(this));
-			},
-			_responseToSirenEntity: function(response) {
-				if (response.ok) {
-					return response
-						.json()
-						.then(function(json) {
-							return window.D2L.Hypermedia.Siren.Parse(json);
-						});
-				}
-				return Promise.reject(response.status + ' ' + response.statusText);
-			},
-			_notificationsToArray: function(notification, combined) {
-				var maxCount = 99;
-				if (combined) {
-					notification = {
-						updates: Object.keys(notification).reduce(function(accumulator, key) {
-							return {
-								updateCount: notification[key].updateCount + accumulator.updateCount,
-								icon: null
-							};
-						}, { updateCount: 0 })
-					};
-				}
-
-				return Object.keys(notification).map(function(key) {
-					var toolTip = notification[key].toolTip
-						? notification[key].toolTip.map(function(value) {
-							return 	this.localize(value[0], 'number', value[1]);
-						}.bind(this))
-						: null;
-
-					var element = {
-						key: key,
-						order: notification[key].order,
-						isDisabled: (notification[key].updateCount <= 0),
-						updateCount: (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount,
-						toolTip: toolTip,
-						ariaLabel: this.localize(key, 'number', notification[key].updateCount),
-						icon: notification[key].icon
-					};
-					return element;
-				}.bind(this)).sort(function(a,b) {
-					return a.order-b.order;
-				});
+			_handleCombinedChange: function(combined) {
+				this._fetchNotifications(this.href, this.presentationHref, combined);
 			}
 		});
 	</script>
