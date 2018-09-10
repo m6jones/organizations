@@ -32,6 +32,19 @@ describe('d2l-organization-date', () => {
 				href: '/semester.json'
 			}]
 		};
+		var endsOrganization = {
+			properties: {
+				name: 'Course Name',
+				code: 'SCI100',
+				startDate: '1998-01-01T00:00:00.000Z',
+				endDate: '2040-01-01T00:00:00.000Z',
+				isActive: true
+			},
+			links: [{
+				rel: ['https://api.brightspace.com/rels/parent-semester'],
+				href: '/semester.json'
+			}]
+		};
 		var endedOrganization = {
 			properties: {
 				name: 'Course Name',
@@ -57,6 +70,11 @@ describe('d2l-organization-date', () => {
 			.returns(Promise.resolve({
 				ok: true,
 				json: () => { return Promise.resolve(futureOrganization); }
+			}))
+			.withArgs(sinon.match.has('url', sinon.match('/ends-organization.json')))
+			.returns(Promise.resolve({
+				ok: true,
+				json: () => { return Promise.resolve(endsOrganization); }
 			}))
 			.withArgs(sinon.match.has('url', sinon.match('/ended-organization.json')))
 			.returns(Promise.resolve({
@@ -115,8 +133,19 @@ describe('d2l-organization-date', () => {
 
 		});
 
-		it('should display the "Ends" text when organization ends in past', done => {
+		it('should display the "Ended" text when organization ended in past', done => {
 			component = fixture('ended-organization');
+
+			setTimeout(() => {
+				var text = component.$$('span:not([hidden])');
+				expect(text.innerText).to.contain('Ended');
+				done();
+			});
+
+		});
+
+		it('should display the "Ends" text when organization ends in past', done => {
+			component = fixture('ends-organization');
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
@@ -189,6 +218,15 @@ describe('d2l-organization-date', () => {
 		it('should send the "Ends" text when organization ends in past', done => {
 			component.addEventListener('d2l-organization-accessible', function(e) {
 				expect(e.detail.organization.date).to.contain('Ends ');
+				done();
+			});
+			component.href = '/ends-organization.json';
+
+		});
+
+		it('should send the "Ended" text when organization ended in past', done => {
+			component.addEventListener('d2l-organization-accessible', function(e) {
+				expect(e.detail.organization.date).to.contain('Ended ');
 				done();
 			});
 			component.href = '/ended-organization.json';
