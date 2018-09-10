@@ -52,12 +52,17 @@ Polymer-based web component for a organization date such as start and end date f
 						var endDate = Date.parse(organizationEntity.properties.endDate);
 						var startDate = Date.parse(organizationEntity.properties.startDate);
 
-						if (endDate < nowDate) {
-							endDate = new Date(endDate);
-							this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-						} else if (startDate > nowDate) {
+						if (startDate > nowDate) {
 							startDate = new Date(startDate);
 							this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
+
+						} else if (endDate < nowDate) {
+							endDate = new Date(endDate);
+							this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+
+						} else if (endDate >= nowDate) {
+							endDate = new Date(endDate);
+							this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
 						}
 
 						if (this._statusText || !organizationEntity.properties.isActive) {
