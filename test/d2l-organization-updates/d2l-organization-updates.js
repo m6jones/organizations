@@ -208,7 +208,7 @@ describe('d2l-organization-updates', () => {
 		].forEach(testCase => {
 
 			it(testName(testCase), done => {
-				component._p_orgUpdates_fetchNotifications(component.href, testCase.properties)
+				component.__orgUpdates_fetchNotifications(component.href, testCase.properties)
 					.then(function(notification) {
 						component._notifications = component._orgUpdates_notifications(notification);
 					});

@@ -14,7 +14,7 @@
 	 * @polymerBehavior D2L.PolymerBehaviors.Organization.Updates.BehaviorImpl
 	 */
 	D2L.PolymerBehaviors.Organization.Updates.BehaviorImpl = {
-		_organizationUpdates: {
+		__organizationUpdates: {
 			notificationMap: {
 				UnreadAssignmentFeedback: {
 					key: 'unreadAssignmentFeedback',
@@ -70,7 +70,7 @@
 					return presentation.properties || {};
 				}.bind(this))
 				.then(function(presentation) {
-					return this._p_orgUpdates_fetchNotifications(notificationsUrl, presentation);
+					return this.__orgUpdates_fetchNotifications(notificationsUrl, presentation);
 				}.bind(this));
 		},
 		_orgUpdates_notifications: function(notification, combined) {
@@ -107,7 +107,7 @@
 				return a.order - b.order;
 			});
 		},
-		_p_orgUpdates_fetchNotifications: function(notificationsUrl, presentation) {
+		__orgUpdates_fetchNotifications: function(notificationsUrl, presentation) {
 			if (!notificationsUrl || !presentation) {
 				return Promise.resolve();
 			}
@@ -120,19 +120,19 @@
 					var notifications = {};
 					for (var key in notificationsInfo) {
 						if (notificationsInfo.hasOwnProperty(key)) {
-							this._p_orgUpdates_prepareNotification(notifications, presentation, key, notificationsInfo[key]);
+							this.__orgUpdates_prepareNotification(notifications, presentation, key, notificationsInfo[key]);
 						}
 					}
 
 					return notifications;
 				}.bind(this));
 		},
-		_p_orgUpdates_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
-			if (!this._organizationUpdates.notificationMap.hasOwnProperty(notification)) {
+		__orgUpdates_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
+			if (!this.__organizationUpdates.notificationMap.hasOwnProperty(notification)) {
 				return;
 			}
 
-			var options = this._organizationUpdates.notificationMap[notification];
+			var options = this.__organizationUpdates.notificationMap[notification];
 			if (!options.key
 				|| !options.presentationLink
 				|| !presentation[options.presentationLink]
