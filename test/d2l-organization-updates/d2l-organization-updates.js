@@ -3,6 +3,7 @@ describe('d2l-organization-updates', () => {
 		component,
 		fetchStub,
 		notificationEntity,
+		notificationEntityAllFull,
 		presentationEntity;
 
 	function SetupFetchStub(url, entity) {
@@ -30,6 +31,20 @@ describe('d2l-organization-updates', () => {
 				href: '/data/notification.json'
 			}]
 		};
+		notificationEntityAllFull = {
+			properties: {
+				UnattemptedQuizzes: 30,
+				UnreadAssignmentFeedback: 40,
+				UngradedQuizzes: 4,
+				UnreadDiscussions: 20,
+				UnapprovedDiscussions: 79,
+				UnreadAssignmentSubmissions: 200
+			},
+			links: [{
+				rel: ['self'],
+				href: '/data/notification.json'
+			}]
+		};
 		presentationEntity = {
 			properties: {
 				ShowCourseCode: true,
@@ -44,6 +59,7 @@ describe('d2l-organization-updates', () => {
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		SetupFetchStub('/notification.json', notificationEntity);
+		SetupFetchStub('/notification-all-full.json', notificationEntityAllFull);
 		SetupFetchStub('/presentation.json', presentationEntity);
 	});
 
@@ -56,21 +72,23 @@ describe('d2l-organization-updates', () => {
 			component = fixture('no-params');
 		});
 
-		it('should call _fetchNotifications upon changes to href', () => {
+		it('should call _fetchNotifications upon changes to href', done => {
+			component.presentationHref = '';
 			var spy = sandbox.spy(component, '_fetchNotifications');
 			component.href = '/notification.json';
-			expect(spy).to.have.been.calledOnce;
+			setTimeout(() => {
+				expect(spy).to.have.been.calledOnce;
+				done();
+			});
 		});
 
-		it('should call _fetchNotifications and _fetchPresentation upon changes to presentation-href', done => {
+		it('should call _fetchNotifications changes to presentation-href', done => {
 			component.href = '';
 			var spyNotification = sandbox.spy(component, '_fetchNotifications');
-			var spyPresentation = sandbox.spy(component, '_fetchPresentation');
 
 			component.presentationHref = 'presentation.json';
 
 			setTimeout(() => {
-				expect(spyPresentation).to.have.been.calledOnce;
 				expect(spyNotification).to.have.been.calledOnce;
 				done();
 			});
@@ -88,11 +106,7 @@ describe('d2l-organization-updates', () => {
 		});
 
 		it('should set the _notifications', () => {
-			expect(component._notifications).to.be.an('object');
-		});
-
-		it('should set the _presentation', () => {
-			expect(component._presentation).to.be.an('object');
+			expect(component._notifications).to.be.an('array');
 		});
 
 	});
@@ -107,49 +121,20 @@ describe('d2l-organization-updates', () => {
 		});
 
 		it('Correct Display.', () => {
-			// UnattemptedQuizzes: -20,
-			var notification = component.$$('#unattemptedQuizzes');
-			expect(notification.getAttribute('disabled')).is.equal.true;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			expect(notification.innerHTML).to.contain('Unattempted Quizzes');
-
-			// UnreadAssignmentFeedback: 0,
-			notification = component.$$('#unreadAssignmentFeedback');
-			expect(notification.getAttribute('disabled')).is.equal.true;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			expect(notification.innerHTML).to.contain('Assignment Feedback');
+			// unreadAssignmentFeedback: -20,
+			var notification = component.$$('#unreadAssignmentFeedback');
+			expect(notification.getAttribute('disabled')).is.equal.false;
+			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('99+');
 
 			// UngradedQuizzes: 4
-			notification = component.$$('#ungradedQuizzes');
-			expect(notification.getAttribute('disabled')).is.equal.false;
-			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('4');
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			expect(notification.innerHTML).to.contain('Ungraded Quizzes');
+			notification = component.$$('#unreadQuizzesFeedback');
+			expect(notification.getAttribute('disabled')).is.equal.true;
 
 			// UnreadDiscussions: 20
 			// UnapprovedDiscussions: 79
-			notification = component.$$('#unreadDiscussions');
+			notification = component.$$('#unreadDiscussionFeedback');
 			expect(notification.getAttribute('disabled')).is.equal.false;
 			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('99');
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			expect(notification.innerHTML).to.contain('Discussions');
-
-			// UnreadAssignmentSubmissions: 200
-			notification = component.$$('#unreadAssignmentSubmissions');
-			expect(notification.getAttribute('disabled')).is.equal.false;
-			expect(notification.querySelector('.update-text-icon').innerHTML).is.equal('99+');
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			notification = notification.nextSibling;
-			expect(notification.innerHTML).to.contain('Assignment Submissions');
 		});
 
 		it('Combined Display.', done => {
@@ -166,7 +151,7 @@ describe('d2l-organization-updates', () => {
 
 	describe('Counts and icons correct.', () => {
 		beforeEach(done => {
-			component = fixture('with-href-and-presentation-href');
+			component = fixture('with-href-and-presentation-href-all-full');
 
 			setTimeout(() => {
 				done();
@@ -180,26 +165,6 @@ describe('d2l-organization-updates', () => {
 		}
 
 		[
-			{
-				properties: {
-					ShowUnattemptedQuizzes: true,
-					ShowDropboxUnreadFeedback: true,
-					ShowUngradedQuizAttempts: true,
-					ShowUnreadDiscussionMessages: true,
-					ShowUnreadDropboxSubmissions: true,
-				},
-				count: 5
-			},
-			{
-				properties: {
-					ShowUnattemptedQuizzes: false,
-					ShowDropboxUnreadFeedback: true,
-					ShowUngradedQuizAttempts: true,
-					ShowUnreadDiscussionMessages: true,
-					ShowUnreadDropboxSubmissions: true,
-				},
-				count: 4
-			},
 			{
 				properties: {
 					ShowUnattemptedQuizzes: false,
@@ -243,10 +208,13 @@ describe('d2l-organization-updates', () => {
 		].forEach(testCase => {
 
 			it(testName(testCase), done => {
-				component._presentation = testCase.properties;
+				component.__orgUpdates_fetchNotifications(component.href, testCase.properties)
+					.then(function(notification) {
+						component._notifications = component._orgUpdates_notifications(notification);
+					});
 
 				setTimeout(() => {
-					var notifications = Polymer.dom(component.root).querySelectorAll('.container');
+					var notifications = Polymer.dom(component.root).querySelectorAll('.organization-updates-container');
 					expect(notifications.length).to.equal(testCase.count);
 					done();
 				});
