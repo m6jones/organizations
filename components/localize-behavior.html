@@ -1,0 +1,80 @@
+<link rel="import" href="../../d2l-localize-behavior/d2l-localize-behavior.html">
+<link rel="import" href="../lang/ar.html">
+<link rel="import" href="../lang/de.html">
+<link rel="import" href="../lang/en.html">
+<link rel="import" href="../lang/es.html">
+<link rel="import" href="../lang/fi.html">
+<link rel="import" href="../lang/fr.html">
+<link rel="import" href="../lang/ja.html">
+<link rel="import" href="../lang/ko.html">
+<link rel="import" href="../lang/nb.html">
+<link rel="import" href="../lang/nl.html">
+<link rel="import" href="../lang/pt.html">
+<link rel="import" href="../lang/sv.html">
+<link rel="import" href="../lang/tr.html">
+<link rel="import" href="../lang/zh-tw.html">
+<link rel="import" href="../lang/zh.html">
+<script>
+	window.D2L = window.D2L || {};
+	window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+	window.D2L.PolymerBehaviors.Organization = window.D2L.PolymerBehaviors.Organization || {};
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.Organization.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.Organization.LocalizeBehaviorImpl = {
+		properties: {
+			locale: {
+				type: String,
+				value: function() {
+					return document.documentElement.lang
+						|| document.documentElement.getAttribute('data-lang-default')
+						|| 'en-us';
+				}
+			},
+			resources: {
+				value: function() {
+					return {
+						'en': this.en,
+						'ar': this.ar,
+						'de': this.de,
+						'es': this.es,
+						'fi': this.fi,
+						'fr': this.fr,
+						'ja': this.ja,
+						'ko': this.ko,
+						'nb': this.nb,
+						'nl': this.nl,
+						'pt': this.pt,
+						'sv': this.sv,
+						'tr': this.tr,
+						'zh': this.zh,
+						'zh-tw': this.zhTw
+					};
+				}
+			}
+		}
+	};
+
+	/*
+	* @polymerBehavior D2L.PolymerBehaviors.Organization.LocalizeBehavior
+	*/
+	D2L.PolymerBehaviors.Organization.LocalizeBehavior = [
+		D2L.PolymerBehaviors.LocalizeBehavior,
+		D2L.PolymerBehaviors.Organization.LocalizeBehaviorImpl,
+		D2L.PolymerBehaviors.Organization.LangArBehavior,
+		D2L.PolymerBehaviors.Organization.LangDeBehavior,
+		D2L.PolymerBehaviors.Organization.LangEnBehavior,
+		D2L.PolymerBehaviors.Organization.LangEsBehavior,
+		D2L.PolymerBehaviors.Organization.LangFiBehavior,
+		D2L.PolymerBehaviors.Organization.LangFrBehavior,
+		D2L.PolymerBehaviors.Organization.LangJaBehavior,
+		D2L.PolymerBehaviors.Organization.LangKoBehavior,
+		D2L.PolymerBehaviors.Organization.LangNbBehavior,
+		D2L.PolymerBehaviors.Organization.LangNlBehavior,
+		D2L.PolymerBehaviors.Organization.LangPtBehavior,
+		D2L.PolymerBehaviors.Organization.LangSvBehavior,
+		D2L.PolymerBehaviors.Organization.LangTrBehavior,
+		D2L.PolymerBehaviors.Organization.LangZhTwBehavior,
+		D2L.PolymerBehaviors.Organization.LangZhBehavior
+	];
+</script>
