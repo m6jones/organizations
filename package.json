@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "polymer install",
-    "lint:html": "eslint *.html demo/*.html test/*.html",
+    "lint:html": "eslint *.html {demo,components,test}/*.html",
     "lint": "npm run lint:html && polymer lint --input ./{components,test}/*.html",
     "pretest": "npm run lint",
     "test": "polymer test --skip-plugin sauce",
