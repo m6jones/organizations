@@ -103,7 +103,9 @@ Polymer-based web component for a organization updates.
 		<template is="dom-repeat" items="[[_notifications]]">
 			<template is="dom-if" if="[[item.icon]]">
 				<span class="organization-updates-container" disabled$="[[item.isDisabled]]" id="[[item.key]]">
-					<d2l-icon icon="[[item.icon]]"></d2l-icon>
+					<a href="[[item.link]]">
+						<d2l-icon icon="[[item.icon]]"></d2l-icon>
+					</a>
 					<span class="update-text-box-icon update-text-box">
 						<div class="update-text-icon" aria-hidden="true">[[item.updateCount]]</div>
 						<d2l-offscreen>[[item.ariaLabel]]</d2l-offscreen>
@@ -133,8 +135,7 @@ Polymer-based web component for a organization updates.
 				combined: {
 					type: Boolean,
 					reflectToAttribute: true,
-					value: false,
-					observer: '_handleCombinedChange'
+					value: false
 				},
 
 				_notifications: {
@@ -148,13 +149,10 @@ Polymer-based web component for a organization updates.
 			],
 
 			observers: [
-				'_fetchNotifications(href, presentationHref)'
+				'_fetchNotifications(href, presentationHref, combined)'
 			],
 
 			_fetchNotifications: function(notificationsUrl, presentationUrl, combined) {
-				if (!combined) {
-					combined = this.combined;
-				}
 				if (!notificationsUrl || !presentationUrl) {
 					return Promise.resolve();
 				}
@@ -162,9 +160,6 @@ Polymer-based web component for a organization updates.
 					.then(function(notification) {
 						this._notifications = this._orgUpdates_notifications(notification, combined);
 					}.bind(this));
-			},
-			_handleCombinedChange: function(combined) {
-				this._fetchNotifications(this.href, this.presentationHref, combined);
 			}
 		});
 	</script>

@@ -1,4 +1,5 @@
 <link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
 <link rel="import" href="../../../d2l-icons/tier1-icons.html">
 <link rel="import" href="../d2l-organization-icons.html">
 <link rel="import" href="../d2l-organization-behavior.html">
@@ -75,6 +76,9 @@
 		},
 		_orgUpdates_notifications: function(notification, combined) {
 			var maxCount = 99;
+			if (!notification) {
+				return;
+			}
 			if (combined) {
 				notification = {
 					updates: Object.keys(notification).reduce(function(accumulator, key) {
@@ -100,7 +104,8 @@
 					updateCount: (notification[key].updateCount > maxCount) ? maxCount + '+' : notification[key].updateCount,
 					toolTip: toolTip,
 					ariaLabel: this.localize(key, 'number', notification[key].updateCount),
-					icon: notification[key].icon
+					icon: notification[key].icon,
+					link: notification[key].link
 				};
 				return element;
 			}.bind(this)).sort(function(a, b) {
@@ -114,21 +119,20 @@
 
 			return this._fetchSirenEntity(notificationsUrl)
 				.then(function(notificationsInfo) {
-					if (!(notificationsInfo = notificationsInfo.properties)) {
+					if (!(notificationsInfo = notificationsInfo.getSubEntities(this.HypermediaRels.Notifications.updates))) {
 						return;
 					}
 					var notifications = {};
-					for (var key in notificationsInfo) {
-						if (notificationsInfo.hasOwnProperty(key)) {
-							this.__orgUpdates_prepareNotification(notifications, presentation, key, notificationsInfo[key]);
-						}
+					for (var i = 0; i < notificationsInfo.length; i++) {
+						this.__orgUpdates_prepareNotification(notifications, presentation, notificationsInfo[i]);
 					}
 
 					return notifications;
 				}.bind(this));
 		},
-		__orgUpdates_prepareNotification: function(notifications, presentation, notification, numberOfUpdates) {
-			if (!this.__organizationUpdates.notificationMap.hasOwnProperty(notification)) {
+		__orgUpdates_prepareNotification: function(notifications, presentation, updateEntity) {
+			var notification = updateEntity.properties && updateEntity.properties.type;
+			if (!notification && !this.__organizationUpdates.notificationMap.hasOwnProperty(notification)) {
 				return;
 			}
 
@@ -140,15 +144,23 @@
 				return;
 			}
 
+			var currentLink = updateEntity.hasLinkByRel(this.HypermediaRels.Notifications.updatesSource)
+				&& updateEntity.getLinkByRel(this.HypermediaRels.Notifications.updatesSource).href;
+
 			if (!notifications.hasOwnProperty(options.key)) {
 				notifications[options.key] = {
 					icon: options.icon,
 					updateCount: 0,
 					order: options.order,
-					toolTip: []
+					toolTip: [],
+					link: currentLink
 				};
+
+			} else if (notifications[options.key].link !== currentLink) {
+				return;
 			}
 
+			var numberOfUpdates = updateEntity.properties.count;
 			notifications[options.key].updateCount += numberOfUpdates;
 			if (numberOfUpdates) {
 				notifications[options.key].toolTip.push([options.toolTip, numberOfUpdates]);
@@ -160,6 +172,7 @@
 	* @polymerBehavior D2L.PolymerBehaviors.Organization.Updates.Behavior
 	*/
 	D2L.PolymerBehaviors.Organization.Updates.Behavior = [
+		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.Organization.Updates.LocalizeBehavior,
 		D2L.PolymerBehaviors.Organization.Behavior,
 		D2L.PolymerBehaviors.Organization.Updates.BehaviorImpl
