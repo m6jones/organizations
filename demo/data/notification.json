@@ -8,7 +8,7 @@
       },
       "links": [
         {
-          "rel": [ "https://notifications.api.brightspace.com/rels/update-location" ],
+          "rel": [ "https://notifications.api.brightspace.com/rels/updates-source" ],
           "title": "UnreadDiscussions",
           "href": "http://kdx0-nstonehouse.desire2learn.d2l:44444/d2l/p/le/discussions/6609"
         }
