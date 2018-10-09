@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
-    "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.13.0",
+    "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.24.0",
     "d2l-icons": "BrightspaceUI/icons#^5.0.1",
     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#^1.1.2",
     "d2l-offscreen": "BrightspaceUI/offscreen#^3.0.3",
