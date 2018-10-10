@@ -1,7 +1,7 @@
 [
   {
-    "name": "D2L.Organizations.Date",
-    "source_dir": "lang",
+    "name": "Date",
+    "source_dir": "components/d2l-organization-date/lang",
     "output_file_path": "components/d2l-organization-date/lang/%LANG%.json",
     "output_lang_rewrite": [
       "ar-sa ar",
@@ -19,8 +19,8 @@
       "zh-tw zh-tw"
     ]
   },{
-    "name": "D2L.Organizations.Updates",
-    "source_dir": "lang",
+    "name": "Updates",
+    "source_dir": "components/d2l-organization-updates/lang",
     "output_file_path": "components/d2l-organization-updates/lang/%LANG%.json",
     "output_lang_rewrite": [
       "ar-sa ar",
