@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "polymer install --variants",
     "build": "gulp build",
+    "gulp": "gulp",
     "test": "npm run lint && npm run test:polymer:local",
     "lint": "npm run lint:html && npm run lint:wc",
     "lint:html": "eslint *.html components/**/*.html test/**/*.{js,html}",
