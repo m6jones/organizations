@@ -1,0 +1,41 @@
+[
+  {
+    "name": "Date",
+    "source_dir": "components/d2l-organization-date/lang",
+    "output_file_path": "components/d2l-organization-date/lang/%LANG%.json",
+    "output_lang_rewrite": [
+      "ar-sa ar",
+      "de-de de",
+      "es-mx es",
+      "fi-FI fi",
+      "fr-ca fr",
+      "ja-jp ja",
+      "ko-kr ko",
+      "nl-nl nl",
+      "pt-br pt",
+      "sv-se sv",
+      "tr-tr tr",
+      "zh-cn zh",
+      "zh-tw zh-tw"
+    ]
+  },{
+    "name": "Updates",
+    "source_dir": "components/d2l-organization-updates/lang",
+    "output_file_path": "components/d2l-organization-updates/lang/%LANG%.json",
+    "output_lang_rewrite": [
+      "ar-sa ar",
+      "de-de de",
+      "es-mx es",
+      "fi-FI fi",
+      "fr-ca fr",
+      "ja-jp ja",
+      "ko-kr ko",
+      "nl-nl nl",
+      "pt-br pt",
+      "sv-se sv",
+      "tr-tr tr",
+      "zh-cn zh",
+      "zh-tw zh-tw"
+    ]
+  }
+]
