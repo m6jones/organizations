@@ -50,7 +50,7 @@ sergeDirectories.forEach((sergeComponent) => {
 		);
 	});
 
-	cleanSeries.push(() => del([buildDirectory]));
+	cleanSeries.push(() => del([sergeComponent.source_dir + buildDirectory + '/lang']));
 
 });
 
