@@ -85,6 +85,8 @@ Polymer-based web component for a organization info such as course code and seme
 			},
 
 			_fetchOrganization: function(organizationHref) {
+				this._semesterName = null;
+				this._organizationCode = null;
 				return this._fetchSirenEntity(organizationHref)
 					.then(function(organizationEntity) {
 						this._statusTextEnded = null;
