@@ -1,5 +1,5 @@
 {
-	"endsAt": "Ends {date} at {time}",
-	"ended": "Ended {date} at {time}",
-	"startsAt": "Starts {date} at {time}"
+   "ended" : "Beendet am {date} um {time}",
+   "endsAt" : "Endet am {date} um {time}",
+   "startsAt" : "Beginnt am {date} um {time}"
 }
