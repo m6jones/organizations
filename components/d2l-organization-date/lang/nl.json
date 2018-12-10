@@ -1,0 +1,5 @@
+{
+   "ended" : "Geëindigd op {date} om {time}",
+   "endsAt" : "Eindigt op {date} om {time}",
+   "startsAt" : "Start op {date} om {time}"
+}

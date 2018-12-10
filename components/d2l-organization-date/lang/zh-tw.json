@@ -1,0 +1,5 @@
+{
+   "ended" : "已結束於 {date} 的 {time}",
+   "endsAt" : "結束於 {date} 的 {time}",
+   "startsAt" : "開始於 {date} 的 {time}"
+}

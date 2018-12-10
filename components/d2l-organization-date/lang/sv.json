@@ -1,0 +1,5 @@
+{
+   "ended" : "Slutade {date} kl. {time}",
+   "endsAt" : "Slutar {date} kl. {time}",
+   "startsAt" : "Startar {date} kl. {time}"
+}

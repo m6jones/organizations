@@ -1,0 +1,5 @@
+{
+   "ended" : "{date} tarihinde, şu saatte sona erdi: {time}",
+   "endsAt" : "{date} tarihinde, şu saatte sona erecek: {time}",
+   "startsAt" : "{date} tarihinde, şu saatte başlayacak: {time}"
+}

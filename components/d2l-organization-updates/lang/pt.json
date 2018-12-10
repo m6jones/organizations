@@ -1,0 +1,11 @@
+{
+   "unapprovedDiscussions" : "{number} discussões não aprovadas",
+   "unattemptedQuizzes" : "{number} questionários sem tentativa",
+   "ungradedQuizzes" : "{number} questionários sem nota",
+   "unreadAssignmentFeedback" : "{number} comentários de atribuição não lidos",
+   "unreadAssignmentSubmissions" : "{number} envios de atribuição não lidos",
+   "unreadDiscussionFeedback" : "{number} comentários de discussão não lidos",
+   "unreadDiscussions" : "{number} discussões não lidas",
+   "unreadQuizzesFeedback" : "{number} comentários de questionários não lidos",
+   "updates" : "atualizações"
+}

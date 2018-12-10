@@ -1,0 +1,5 @@
+{
+   "ended" : "{date} {time} に終了済み",
+   "endsAt" : "{date} {time} に終了",
+   "startsAt" : "{date} {time} に開始"
+}

@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "ShowCourseCode": true,
+    "ShowSemester": true,
+    "ShowUnattemptedQuizzes":true,
+    "ShowDropboxUnreadFeedback":true,
+    "ShowUngradedQuizAttempts":true,
+    "ShowUnreadDiscussionMessages":true,
+    "ShowUnreadDropboxSubmissions":true
+  },
+  "links": [{
+    "rel": ["self"],
+    "href": "data/presentation/1.json"
+  }]
+}
