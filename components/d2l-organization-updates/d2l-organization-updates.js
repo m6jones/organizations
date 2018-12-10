@@ -38,11 +38,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-organization-updates">
 			.organization-updates-container ~ * {
 				margin: 0 0 0 1.95rem;
 			}
-			/* P2-shadow */
-			:host-context([dir="rtl"]) .organization-updates-container ~ * {
-				margin: 0 1.95rem 0 0;
-			}
-			/* P1-shady, P2-shady */
+
 			:host(:dir(rtl)) .organization-updates-container ~ * {
 				margin: 0 1.95rem 0 0;
 			}
