@@ -34,14 +34,14 @@ Polymer({
 		presentationHref: String,
 
 		_statusText: String,
-		_hideCourseStartDate:{
+		_showCourseStartDate:{
 			type: Boolean,
 			value: false
 		},
-		_hideCourseEndDate: {
+		_showCourseEndDate: {
 			type: Boolean,
 			value: false
-		}		
+		}
 	},
 
 	behaviors: [
@@ -51,7 +51,7 @@ Polymer({
 
 	observers: [
 		'_fetchPresentation(presentationHref)',
-		'_fetchOrganizationDate(href, _hideCourseStartDate, _hideCourseEndDate)',
+		'_fetchOrganizationDate(href, _showCourseStartDate, _showCourseEndDate)',
 		'_sendVoiceReaderInfo(_statusText)'
 	],
 
@@ -61,16 +61,16 @@ Polymer({
 		}
 		return this._fetchSirenEntity(presentationHref)
 			.then(function(presentationEntity) {
-				this._hideCourseStartDate = presentationEntity
+				this._showCourseStartDate = presentationEntity
 					&& presentationEntity.properties
-					&& presentationEntity.properties.HideCourseStartDate;
-				this._hideCourseEndDate = presentationEntity
+					&& presentationEntity.properties.ShowCourseStartDate;
+				this._showCourseEndDate = presentationEntity
 					&& presentationEntity.properties
-					&& presentationEntity.properties.HideCourseEndDate;
+					&& presentationEntity.properties.ShowCourseEndDate;
 			}.bind(this));
-	},	
+	},
 
-	_fetchOrganizationDate: function(organizationHref, hideCourseStartDate, hideCourseEndDate) {
+	_fetchOrganizationDate: function(organizationHref, showCourseStartDate, ShowCourseEndDate) {
 		return this._fetchSirenEntity(organizationHref)
 			.then(function(organizationEntity) {
 				this._statusText = null;
@@ -88,19 +88,22 @@ Polymer({
 				var startDate = Date.parse(organizationEntity.properties.startDate);
 
 				if (startDate > nowDate) {
-					startDate = new Date(startDate);
-					this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
-					if (hideCourseStartDate) this._statusText = null;
+					if (showCourseStartDate) {
+						startDate = new Date(startDate);
+						this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
+					}
 
 				} else if (endDate < nowDate) {
-					endDate = new Date(endDate);
-					this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					if(hideCourseEndDate) this._statusText = null;
+					if (showCourseEndDate) {
+						endDate = new Date(endDate);
+						this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+					}
 
 				} else if (endDate >= nowDate) {
-					endDate = new Date(endDate);
-					this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					if(hideCourseEndDate) this._statusText = null;
+					if (showCourseEndDate) {
+						endDate = new Date(endDate);
+						this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+					}
 				}
 
 				if (this._statusText || !organizationEntity.properties.isActive) {
