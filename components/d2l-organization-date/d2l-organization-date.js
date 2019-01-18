@@ -70,7 +70,7 @@ Polymer({
 			}.bind(this));
 	},
 
-	_fetchOrganizationDate: function(organizationHref, showCourseStartDate, ShowCourseEndDate) {
+	_fetchOrganizationDate: function(organizationHref, showCourseStartDate, showCourseEndDate) {
 		return this._fetchSirenEntity(organizationHref)
 			.then(function(organizationEntity) {
 				this._statusText = null;
