@@ -1,8 +1,6 @@
 /**
 `d2l-organization-date`
-
 Polymer-based web component for a organization date such as start and end date for a course.
-
 @demo demo/d2l-organization-date/d2l-organization-date-demo.html Organization Name
 */
 /*
@@ -21,7 +19,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-organization-date">
 	<template strip-whitespace="">
 		<span hidden$="[[!_statusText]]">[[_statusText]]</span>
 	</template>
-
 	
 </dom-module>`;
 
@@ -34,11 +31,11 @@ Polymer({
 		presentationHref: String,
 
 		_statusText: String,
-		_showCourseStartDate:{
+		_hideCourseStartDate:{
 			type: Boolean,
 			value: false
 		},
-		_showCourseEndDate: {
+		_hideCourseEndDate:{
 			type: Boolean,
 			value: false
 		}
@@ -51,7 +48,7 @@ Polymer({
 
 	observers: [
 		'_fetchPresentation(presentationHref)',
-		'_fetchOrganizationDate(href, _showCourseStartDate, _showCourseEndDate)',
+		'_fetchOrganizationDate(href, _hideCourseStartDate, _hideCourseEndDate)',
 		'_sendVoiceReaderInfo(_statusText)'
 	],
 
@@ -61,16 +58,19 @@ Polymer({
 		}
 		return this._fetchSirenEntity(presentationHref)
 			.then(function(presentationEntity) {
-				this._showCourseStartDate = presentationEntity
+				this._hideCourseStartDate = presentationEntity
 					&& presentationEntity.properties
-					&& presentationEntity.properties.ShowCourseStartDate;
-				this._showCourseEndDate = presentationEntity
+					&& presentationEntity.properties.HideCourseStartDate;
+				this._hideCourseEndDate = presentationEntity
 					&& presentationEntity.properties
-					&& presentationEntity.properties.ShowCourseEndDate;
+					&& presentationEntity.properties.HideCourseEndDate;
 			}.bind(this));
-	},
+	},	
 
-	_fetchOrganizationDate: function(organizationHref, showCourseStartDate, showCourseEndDate) {
+	_fetchOrganizationDate: function(organizationHref, hideCourseStartDate, hideCourseEndDate) {
+		if (!organizationHref) {
+			return Promise.resolve();
+		}
 		return this._fetchSirenEntity(organizationHref)
 			.then(function(organizationEntity) {
 				this._statusText = null;
@@ -88,22 +88,19 @@ Polymer({
 				var startDate = Date.parse(organizationEntity.properties.startDate);
 
 				if (startDate > nowDate) {
-					if (showCourseStartDate) {
-						startDate = new Date(startDate);
-						this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
-					}
+					startDate = new Date(startDate);
+					this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
+					if (hideCourseStartDate) this._statusText = null;
 
 				} else if (endDate < nowDate) {
-					if (showCourseEndDate) {
-						endDate = new Date(endDate);
-						this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					}
+					endDate = new Date(endDate);
+					this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+					if (hideCourseEndDate) this._statusText = null;
 
 				} else if (endDate >= nowDate) {
-					if (showCourseEndDate) {
-						endDate = new Date(endDate);
-						this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					}
+					endDate = new Date(endDate);
+					this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+					if (hideCourseEndDate) this._statusText = null;
 				}
 
 				if (this._statusText || !organizationEntity.properties.isActive) {
