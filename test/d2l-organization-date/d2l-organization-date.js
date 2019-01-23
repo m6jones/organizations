@@ -63,7 +63,7 @@ describe('d2l-organization-date', () => {
 				HideCourseStartDate: false,
 				HideCourseEndDate: false
 			}
-		};		
+		};
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		fetchStub
@@ -91,7 +91,7 @@ describe('d2l-organization-date', () => {
 			.returns(Promise.resolve({
 				ok: true,
 				json: () => { return Promise.resolve(presentationEntity); }
-			}));			
+			}));
 	});
 
 	afterEach(() => {
@@ -107,7 +107,7 @@ describe('d2l-organization-date', () => {
 			var spy = sandbox.spy(component, '_fetchPresentation');
 			component.presentationHref = '/organization.json';
 			expect(spy).to.have.been.called;
-		});		
+		});
 
 		it('should call _fetchOrganizationDate upon changes to href or _hideCourseStartDate and _hideCourseEndDate', () => {
 			var spy = sandbox.spy(component, '_fetchOrganizationDate');
@@ -115,14 +115,14 @@ describe('d2l-organization-date', () => {
 			component._hideCourseStartDate = true;
 			component._hideCourseEndDate = true;
 			expect(spy).to.have.been.called;
-		});		
+		});
 
 		it('should call _sendVoiceReaderInfo upon changes to _statusText', () => {
 			var spy = sandbox.spy(component, '_sendVoiceReaderInfo');
 
 			component._statusText = '';
 			expect(spy).to.have.been.calledOnce;
-		});			
+		});
 
 	});
 
@@ -154,7 +154,7 @@ describe('d2l-organization-date', () => {
 		it('should set _hideCourseEndDate', () => {
 			expect(component._hideCourseEndDate).to.be.false;
 		});
-	});		
+	});
 
 	describe('status text', () => {
 		it('should display the "Starts" text when organization starts in future', done => {
@@ -208,9 +208,10 @@ describe('d2l-organization-date', () => {
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
+				expect(spy).to.have.been.called;
 				expect(text).to.be.null;
 				done();
-			});	
+			});
 		});
 
 		it ('should display nothing when organization ended in past and _hideCourseEndDate is true', done => {
@@ -220,6 +221,7 @@ describe('d2l-organization-date', () => {
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
+				expect(spy).to.have.been.called;
 				expect(text).to.be.null;
 				done();
 			});
@@ -232,10 +234,11 @@ describe('d2l-organization-date', () => {
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
+				expect(spy).to.have.been.called;
 				expect(text).to.be.null;
 				done();
 			});
-		});	
+		});
 
 		it ('should display the "Starts" text when organization starts in future and _hideCourseStartDate is null', done => {
 			var spy = sandbox.spy(component, '_fetchOrganizationDate');
@@ -245,6 +248,7 @@ describe('d2l-organization-date', () => {
 
 			setTimeout(() => {
 				var text = component.$$('span:not([hidden])');
+				expect(spy).to.have.been.called;
 				expect(text.innerText).to.contain('Starts ');
 				done();
 			});
@@ -255,7 +259,7 @@ describe('d2l-organization-date', () => {
 
 	describe('Events', () => {
 		beforeEach(() => {
-			component = fixture('no-params');			
+			component = fixture('no-params');
 		});
 
 		it('should send event with detail of inactive and before start date as true when organization starts in future.', done => {

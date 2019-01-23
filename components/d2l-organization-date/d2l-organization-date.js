@@ -65,7 +65,7 @@ Polymer({
 					&& presentationEntity.properties
 					&& presentationEntity.properties.HideCourseEndDate;
 			}.bind(this));
-	},	
+	},
 
 	_fetchOrganizationDate: function(organizationHref, hideCourseStartDate, hideCourseEndDate) {
 		if (!organizationHref) {
