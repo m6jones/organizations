@@ -90,17 +90,23 @@ Polymer({
 				if (startDate > nowDate) {
 					startDate = new Date(startDate);
 					this._statusText = this.localize('startsAt', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
-					if (hideCourseStartDate) this._statusText = null;
+					if (hideCourseStartDate) {
+						this._statusText = null;
+					}
 
 				} else if (endDate < nowDate) {
 					endDate = new Date(endDate);
 					this._statusText = this.localize('ended', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					if (hideCourseEndDate) this._statusText = null;
+					if (hideCourseEndDate) {
+						this._statusText = null;
+					}
 
 				} else if (endDate >= nowDate) {
 					endDate = new Date(endDate);
 					this._statusText = this.localize('endsAt', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
-					if (hideCourseEndDate) this._statusText = null;
+					if (hideCourseEndDate) {
+						this._statusText = null;
+					}
 				}
 
 				if (this._statusText || !organizationEntity.properties.isActive) {
