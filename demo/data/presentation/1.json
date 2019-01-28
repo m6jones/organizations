@@ -6,7 +6,9 @@
     "ShowDropboxUnreadFeedback":true,
     "ShowUngradedQuizAttempts":true,
     "ShowUnreadDiscussionMessages":true,
-    "ShowUnreadDropboxSubmissions":true
+    "ShowUnreadDropboxSubmissions":true,
+    "HideCourseStartDate":false,
+    "HideCourseEndDate":false
   },
   "links": [{
     "rel": ["self"],
