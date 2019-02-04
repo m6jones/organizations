@@ -385,7 +385,7 @@ describe('d2l-organization-updates', () => {
 					});
 
 				setTimeout(() => {
-					var notifications = Polymer.dom(component.root).querySelectorAll('.organization-updates-container');
+					var notifications = component.root.querySelectorAll('.organization-updates-container');
 					expect(notifications.length).to.equal(testCase.count);
 					done();
 				});
