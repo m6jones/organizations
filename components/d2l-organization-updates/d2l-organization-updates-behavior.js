@@ -115,6 +115,12 @@ D2L.PolymerBehaviors.Organization.Updates.BehaviorImpl = {
 			return Promise.resolve();
 		}
 
+		if (Object.keys(this.__organizationUpdates.notificationMap).every(function(notificationKey) {
+			return !presentation[this.__organizationUpdates.notificationMap[notificationKey].presentationLink];
+		}.bind(this))) {
+			return Promise.resolve();
+		}
+
 		return this._fetchSirenEntity(notificationsUrl)
 			.then(function(notificationsInfo) {
 				if (!(notificationsInfo = notificationsInfo.getSubEntities(Rels.Notifications.updates))) {

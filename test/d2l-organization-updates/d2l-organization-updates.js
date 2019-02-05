@@ -4,7 +4,9 @@ describe('d2l-organization-updates', () => {
 		fetchStub,
 		notificationEntity,
 		notificationEntityAllFull,
-		presentationEntity;
+		presentationEntity,
+		presentationFalsesEntity,
+		presentationMixedEntity;
 
 	function SetupFetchStub(url, entity) {
 		fetchStub.withArgs(sinon.match.has('url', sinon.match(url)))
@@ -180,11 +182,35 @@ describe('d2l-organization-updates', () => {
 				ShowUnreadDropboxSubmissions: true
 			}
 		};
+		presentationFalsesEntity = {
+			properties: {
+				ShowCourseCode: false,
+				ShowSemester: false,
+				ShowUnattemptedQuizzes: false,
+				ShowDropboxUnreadFeedback: false,
+				ShowUngradedQuizAttempts: false,
+				ShowUnreadDiscussionMessages: false,
+				ShowUnreadDropboxSubmissions: false
+			}
+		};
+		presentationMixedEntity = {
+			properties: {
+				ShowCourseCode: false,
+				ShowSemester: false,
+				ShowUnattemptedQuizzes: true,
+				ShowDropboxUnreadFeedback: false,
+				ShowUngradedQuizAttempts: true,
+				ShowUnreadDiscussionMessages: false,
+				ShowUnreadDropboxSubmissions: false
+			}
+		};
 
 		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
 		SetupFetchStub('/notification.json', notificationEntity);
 		SetupFetchStub('/notification-all-full.json', notificationEntityAllFull);
 		SetupFetchStub('/presentation.json', presentationEntity);
+		SetupFetchStub('/presentation-falses.json', presentationFalsesEntity);
+		SetupFetchStub('/presentation-mixed.json', presentationMixedEntity);
 	});
 
 	afterEach(() => {
@@ -218,6 +244,27 @@ describe('d2l-organization-updates', () => {
 			});
 		});
 
+		it('should avoid retrieving notifications if they are all disabled', done => {
+			component.href = '/notification.json';
+			var spyNotification = sandbox.spy(component, '_fetchSirenEntity');
+			component.presentationHref = 'presentation-falses.json';
+
+			setTimeout(() => {
+				expect(spyNotification).to.not.have.been.calledWith('/notification.json');
+				done();
+			});
+		});
+
+		it('should retrieve notifications if any are enabled', done => {
+			component.href = '/notification.json';
+			var spyNotification = sandbox.spy(component, '_fetchSirenEntity');
+			component.presentationHref = 'presentation-mixed.json';
+
+			setTimeout(() => {
+				expect(spyNotification).to.have.been.calledWith('/notification.json');
+				done();
+			});
+		});
 	});
 
 	describe('fetching notifications', () => {
@@ -295,7 +342,7 @@ describe('d2l-organization-updates', () => {
 					ShowDropboxUnreadFeedback: false,
 					ShowUngradedQuizAttempts: true,
 					ShowUnreadDiscussionMessages: true,
-					ShowUnreadDropboxSubmissions: true,
+					ShowUnreadDropboxSubmissions: true
 				},
 				count: 3
 			},
@@ -305,7 +352,7 @@ describe('d2l-organization-updates', () => {
 					ShowDropboxUnreadFeedback: false,
 					ShowUngradedQuizAttempts: false,
 					ShowUnreadDiscussionMessages: true,
-					ShowUnreadDropboxSubmissions: true,
+					ShowUnreadDropboxSubmissions: true
 				},
 				count: 2
 			},
@@ -315,7 +362,7 @@ describe('d2l-organization-updates', () => {
 					ShowDropboxUnreadFeedback: false,
 					ShowUngradedQuizAttempts: false,
 					ShowUnreadDiscussionMessages: false,
-					ShowUnreadDropboxSubmissions: true,
+					ShowUnreadDropboxSubmissions: true
 				},
 				count: 1
 			},
@@ -325,7 +372,7 @@ describe('d2l-organization-updates', () => {
 					ShowDropboxUnreadFeedback: false,
 					ShowUngradedQuizAttempts: false,
 					ShowUnreadDiscussionMessages: false,
-					ShowUnreadDropboxSubmissions: false,
+					ShowUnreadDropboxSubmissions: false
 				},
 				count: 0
 			}
