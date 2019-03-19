@@ -48,11 +48,10 @@ class OrganizationName extends mixinBehaviors([
 	static get is() { return 'd2l-organization-name'; }
 
 	_getOrganizationName(entity) {
-		console.log(entity);
 		return entity && entity.properties && entity.properties.name || '';
 	}
 
-	_sendVoiceReaderInfo (organizationName) {
+	_sendVoiceReaderInfo(organizationName) {
 		var details = {
 			organization: {
 				name: organizationName
