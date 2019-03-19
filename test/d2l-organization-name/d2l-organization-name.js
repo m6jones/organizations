@@ -1,12 +1,14 @@
 describe('d2l-organization-name', () => {
 	var sandbox,
 		component,
-		fetchStub;
+		organizationEntity;
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 
-		var organizationEntity = {
+		component = fixture('no-params');
+
+		organizationEntity = {
 			properties: {
 				name: 'Course Name',
 				code: 'SCI100',
@@ -19,14 +21,6 @@ describe('d2l-organization-name', () => {
 				href: '/semester.json'
 			}]
 		};
-
-		fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
-		fetchStub
-			.withArgs(sinon.match('/organization.json'), sinon.match.any, sinon.match.any)
-			.returns(Promise.resolve({
-				ok: true,
-				json: () => { return Promise.resolve(organizationEntity); }
-			}));
 	});
 
 	afterEach(() => {
@@ -34,10 +28,6 @@ describe('d2l-organization-name', () => {
 	});
 
 	describe('observers', () => {
-		beforeEach(() => {
-			component = fixture('no-params');
-		});
-
 		it('should call _sendVoiceReaderInfo upon changes to _organizationName', () => {
 			var spy = sandbox.spy(component, '_sendVoiceReaderInfo');
 
@@ -48,11 +38,8 @@ describe('d2l-organization-name', () => {
 	});
 
 	describe('fetching organization', () => {
-		beforeEach(() => {
-			component = fixture('with-href');
-		});
-
 		it('should set the _organizationName', () => {
+			component._loadData(organizationEntity);
 			expect(component._organizationName).to.equal('Course Name');
 		});
 
