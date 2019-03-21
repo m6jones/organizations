@@ -39,78 +39,23 @@ document.body.appendChild($_documentContainer.content);
 	<body class="d2l-typography">
 		<script type="module">
 const $_documentContainer = document.createElement('template');
-
+var endDate = false;
+var startDate = true;
 $_documentContainer.innerHTML = `<div class="vertical-section-container centered">
 
-			<h3>d2l-organization-date: future</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-future.json"
-						presentation-href="../data/presentation/1.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>
 
-			<h3>d2l-organization-date: past</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-past.json"
-						presentation-href="../data/presentation/1.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>
-
-			<h3>d2l-organization-date: current</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-current.json"
-						presentation-href="../data/presentation/1.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>
 
 			<h3>d2l-organization-date: current (No Dates)</h3>
 			<demo-snippet>
 				<template>
 					<d2l-organization-date
 						href="../data/organization-no-dates.json"
-						presentation-href="../data/presentation/1.json">
+						token="1a">
 					</d2l-organization-date>
 				</template>
-			</demo-snippet>				
+			</demo-snippet>
 
-			<h3>d2l-organization-date: future (_hideCourseStartDate: true)</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-future.json"
-						presentation-href="../data/presentation/2.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>			
 
-			<h3>d2l-organization-date: past (_hideCourseEndDate: true)</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-past.json"
-						presentation-href="../data/presentation/3.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>		
-
-			<h3>d2l-organization-date: current (_hideCourseEndDate: true)</h3>
-			<demo-snippet>
-				<template>
-					<d2l-organization-date
-						href="../data/organization-current.json"
-						presentation-href="../data/presentation/3.json">
-					</d2l-organization-date>
-				</template>
-			</demo-snippet>	
 
 		</div>`;
 
