@@ -70,10 +70,12 @@ class D2lOrganizationImage extends mixinBehaviors([ D2L.PolymerBehaviors.Siren.E
 		if (organization.hasSubEntityByClass(Classes.courseImage.courseImage)) {
 			const imageEntity = organization.getSubEntityByClass(Classes.courseImage.courseImage);
 			if (imageEntity.href) {
-				window.D2L.Siren.EntityStore.fetch(imageEntity.href, this.token)
-					.then(function(hydratedImageEntity) {
-						this._image = hydratedImageEntity && hydratedImageEntity.entity;
-					}.bind(this));
+				if (imageEntity.href !== this._imageEntityUrl || (typeof this.token !== 'string' && typeof this.token !== 'function')) {
+					window.D2L.Siren.EntityStore.removeListener(imageEntity.href, this.token, this._handleImageResponse.bind(this));
+				}
+				this._imageEntityUrl = imageEntity.href;
+				window.D2L.Siren.EntityStore.addListener(imageEntity.href, this.token, this._handleImageResponse.bind(this));
+				window.D2L.Siren.EntityStore.fetch(imageEntity.href, this.token);
 			} else {
 				this._image = imageEntity;
 			}
@@ -85,6 +87,10 @@ class D2lOrganizationImage extends mixinBehaviors([ D2L.PolymerBehaviors.Siren.E
 			bubbles: true,
 			composed: true
 		}));
+	}
+
+	_handleImageResponse(hydratedImageEntity) {
+		this._image = hydratedImageEntity;
 	}
 }
 
