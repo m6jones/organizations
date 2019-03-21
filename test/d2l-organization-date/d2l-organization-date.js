@@ -228,7 +228,7 @@ describe('d2l-organization-date', () => {
 	});
 
 	describe('Events', () => {
-		beforeEach( async() => {
+		beforeEach(async() => {
 			component = await fixture('no-params');
 		});
 
