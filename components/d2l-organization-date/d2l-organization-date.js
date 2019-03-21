@@ -30,13 +30,6 @@ class OrganizationDate extends mixinBehaviors([
 			entity: {
 				type: Object
 			},
-			_statusText: {
-				type: String,
-				value: null
-			},
-			_startDate: String,
-			_endDate: String,
-			_entityStatus: String,
 			hideCourseStartDate: {
 				type: Boolean,
 				value: false
@@ -44,7 +37,14 @@ class OrganizationDate extends mixinBehaviors([
 			hideCourseEndDate: {
 				type: Boolean,
 				value: false
-			}
+			},
+			_statusText: {
+				type: String,
+				value: null
+			},
+			_startDate: String,
+			_endDate: String,
+			_entityStatus: String
 		};
 	}
 
