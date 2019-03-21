@@ -15,18 +15,18 @@ import './localize-behavior.js';
  * @polymer
  */
 class OrganizationDate extends mixinBehaviors([
-    D2L.PolymerBehaviors.Siren.EntityBehavior,
-    D2L.PolymerBehaviors.Organization.Date.LocalizeBehavior,
+	D2L.PolymerBehaviors.Siren.EntityBehavior,
+	D2L.PolymerBehaviors.Organization.Date.LocalizeBehavior,
 	D2L.PolymerBehaviors.Organization.Behavior
 ], PolymerElement) {
-    static get template() {
-        return html`
+	static get template() {
+		return html`
             <span hidden$="[[!_statusText]]">[[_statusText]]</span>
-        `;
-    }
+		`;
+	}
 
-    static get properties() {
-        return {
+	static get properties() {
+		return {
 			entity: {
 				type: Object
 			},
@@ -34,28 +34,28 @@ class OrganizationDate extends mixinBehaviors([
 			_startDate: String,
 			_endDate: String,
 			_entityStatus: String,
-            hideCourseStartDate: {
-                type: Boolean,
-                value: false
-            },
-            hideCourseEndDate: {
-                type: Boolean,
-                value: false
-            }
-        };
-    }
+			hideCourseStartDate: {
+				type: Boolean,
+				value: false
+			},
+			hideCourseEndDate: {
+				type: Boolean,
+				value: false
+			}
+		};
+	}
 
-    static get observers(){
-        return [
-        '_getOrganizationDate(entity)',
-		'_setOrganizationDate(hideCourseStartDate, hideCourseEndDate, _startDate, _endDate, _entityStatus)',
-		'_sendVoiceReaderInfo(_statusText)'
-        ];
-    }
+	static get observers() {
+		return [
+			'_getOrganizationDate(entity)',
+			'_setOrganizationDate(hideCourseStartDate, hideCourseEndDate, _startDate, _endDate, _entityStatus)',
+			'_sendVoiceReaderInfo(_statusText)'
+		];
+	}
 
-    static get is() {
-        return 'd2l-organization-date';
-    }
+	static get is() {
+		return 'd2l-organization-date';
+	}
 
 	_getOrganizationDate(entity) {
 		this._startDate = entity && entity.properties && entity.properties.startDate || '';
@@ -98,7 +98,7 @@ class OrganizationDate extends mixinBehaviors([
 		}
 	}
 
-    _sendVoiceReaderInfo(statusText) {
+	_sendVoiceReaderInfo(statusText) {
 		if (!statusText) {
 			return;
 		}

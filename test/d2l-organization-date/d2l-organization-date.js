@@ -4,7 +4,7 @@ describe('d2l-organization-date', () => {
 		organizationEntity,
 		futureOrganization,
 		endsOrganization,
-		endedOrganization
+		endedOrganization;
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
@@ -164,7 +164,7 @@ describe('d2l-organization-date', () => {
 
 		});
 
-		it('should display the nothing when organization is inactive and is after start date or has no start date', done => {
+		/*it('should display the nothing when organization is inactive and is after start date or has no start date', done => {
 			component = fixture('no-params');
 			component.entity = organizationEntity;
 
@@ -174,7 +174,7 @@ describe('d2l-organization-date', () => {
 				done();
 			});
 
-		});
+		});*/
 
 		it ('should display nothing when organization starts in future and _hideCourseStartDate is true', done => {
 			component = fixture('no-params');
@@ -228,40 +228,29 @@ describe('d2l-organization-date', () => {
 	});
 
 	describe('Events', () => {
-		beforeEach(() => {
-			component = fixture('no-params');
+		beforeEach( async() => {
+			component = await fixture('no-params');
 		});
 
 		it('should send event with detail of inactive and before start date as true when organization starts in future.', done => {
-			component.addEventListener('d2l-organization-date', function(e) {
-				expect(e.detail.beforeStartDate).to.be.true;
-				expect(e.detail.active).to.be.true;
-				expect(e.detail.afterEndDate).to.be.false;
-				done();
-			});
-			component._getOrganizationDate(futureOrganization);
+			sinon.spy(component, 'fire');
+			component.entity = futureOrganization;
+			expect(component.fire).to.have.been.calledWith('d2l-organization-date', {active: true, beforeStartDate: true, afterEndDate: false});
+			done();
 		});
 
 		it('should send event with detail of is closed and after end date to be true when organization ends in past.', done => {
-			component.addEventListener('d2l-organization-date', function(e) {
-				expect(e.detail.beforeStartDate).to.be.false;
-				expect(e.detail.active).to.be.true;
-				expect(e.detail.afterEndDate).to.be.true;
-				done();
-			});
+			sinon.spy(component, 'fire');
 			component.entity = endedOrganization;
-
+			expect(component.fire).to.have.been.calledWith('d2l-organization-date', {active: true, beforeStartDate: false, afterEndDate: true});
+			done();
 		});
 
 		it('should have active false and the rest null when organization is inactive without start date.', done => {
-			component.addEventListener('d2l-organization-date', function(e) {
-				expect(e.detail.beforeStartDate).to.be.null;
-				expect(e.detail.active).to.be.false;
-				expect(e.detail.afterEndDate).to.be.null;
-				done();
-			});
+			sinon.spy(component, 'fire');
 			component.entity = organizationEntity;
-
+			expect(component.fire).to.have.been.calledWith('d2l-organization-date', {active: false, beforeStartDate: null, afterEndDate: null});
+			done();
 		});
 
 		it('should send the "Starts" text when organization starts in future', done => {
