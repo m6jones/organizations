@@ -43,7 +43,35 @@ var endDate = false;
 var startDate = true;
 $_documentContainer.innerHTML = `<div class="vertical-section-container centered">
 
+			<h3>d2l-organization-date: future</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-future.json"
+						token="1a">
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
 
+			<h3>d2l-organization-date: past</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-past.json"
+						token="1a">
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
+
+			<h3>d2l-organization-date: current</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-current.json"
+						token="1a">
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
 
 			<h3>d2l-organization-date: current (No Dates)</h3>
 			<demo-snippet>
@@ -55,7 +83,38 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
 				</template>
 			</demo-snippet>
 
+			<h3>d2l-organization-date: future (hideCourseStartDate: true)</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-future.json"
+						token="1a"
+						hide-course-start-date>
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
 
+			<h3>d2l-organization-date: past (hideCourseEndDate: true)</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-past.json"
+						token="1a"
+						hide-course-end-date>
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
+
+			<h3>d2l-organization-date: current (hideCourseEndDate: true)</h3>
+			<demo-snippet>
+				<template>
+					<d2l-organization-date
+						href="../data/organization-current.json"
+						token="1a"
+						hide-course-end-date>
+					</d2l-organization-date>
+				</template>
+			</demo-snippet>
 
 		</div>`;
 
