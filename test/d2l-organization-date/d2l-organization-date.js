@@ -164,7 +164,7 @@ describe('d2l-organization-date', () => {
 
 		});
 
-		/*it('should display the nothing when organization is inactive and is after start date or has no start date', done => {
+		it('should display the nothing when organization is inactive and is after start date or has no start date', done => {
 			component = fixture('no-params');
 			component.entity = organizationEntity;
 
@@ -174,7 +174,7 @@ describe('d2l-organization-date', () => {
 				done();
 			});
 
-		});*/
+		});
 
 		it ('should display nothing when organization starts in future and _hideCourseStartDate is true', done => {
 			component = fixture('no-params');

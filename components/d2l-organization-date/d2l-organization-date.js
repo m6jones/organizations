@@ -30,7 +30,10 @@ class OrganizationDate extends mixinBehaviors([
 			entity: {
 				type: Object
 			},
-			_statusText: String,
+			_statusText: {
+				type: String,
+				value: null
+			},
 			_startDate: String,
 			_endDate: String,
 			_entityStatus: String,
@@ -102,6 +105,7 @@ class OrganizationDate extends mixinBehaviors([
 		if (!statusText) {
 			return;
 		}
+
 		var details = {
 			organization: {
 				date: statusText
